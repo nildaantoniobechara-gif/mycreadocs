@@ -304,21 +304,53 @@ textarea.finput{resize:vertical;min-height:80px;}
         <div class="step-line" id="line1"></div>
         <div class="step"><div class="step-circle pending" id="sc2">2</div><div class="step-label pending" id="sl2">Société</div></div>
         <div class="step-line" id="line2"></div>
-        <div class="step"><div class="step-circle pending" id="sc3">3</div><div class="step-label pending" id="sl3">Filiation</div></div>
+        <div class="step"><div class="step-circle pending" id="sc3">3</div><div class="step-label pending" id="sl3">Capital</div></div>
         <div class="step-line" id="line3"></div>
-        <div class="step"><div class="step-circle pending" id="sc4">4</div><div class="step-label pending" id="sl4">Finaliser</div></div>
+        <div class="step"><div class="step-circle pending" id="sc4">4</div><div class="step-label pending" id="sl4">Filiation</div></div>
+        <div class="step-line" id="line4"></div>
+        <div class="step"><div class="step-circle pending" id="sc5">5</div><div class="step-label pending" id="sl5">Associés</div></div>
+        <div class="step-line" id="line5"></div>
+        <div class="step"><div class="step-circle pending" id="sc6">6</div><div class="step-label pending" id="sl6">Finaliser</div></div>
       </div>
 
+      <!-- ÉTAPE 1 — IDENTITÉ -->
       <div class="card" id="step1">
-        <div class="card-header"><span class="card-title">Étape 1 — Identité</span><span class="badge badge-blue">Obligatoire</span></div>
+        <div class="card-header"><span class="card-title">Étape 1 — Identité du dirigeant</span><span class="badge badge-blue">Obligatoire</span></div>
         <div class="card-body">
           <div class="form-grid">
             <div class="fg"><label class="flabel">Civilité</label><select class="finput fselect" id="f-civilite"><option value="">—</option><option>M.</option><option>Mme</option></select></div>
-            <div class="fg"><label class="flabel">Nationalité</label><input class="finput" id="f-nationalite" placeholder="Ex : Française"></div>
+            <div class="fg"><label class="flabel">Situation matrimoniale</label>
+              <select class="finput fselect" id="f-matrimonial">
+                <option value="">—</option><option>Célibataire</option><option>Marié(e)</option>
+                <option>Pacsé(e)</option><option>Divorcé(e)</option><option>Veuf/Veuve</option>
+              </select>
+            </div>
             <div class="fg"><label class="flabel">Nom *</label><input class="finput" id="f-nom" placeholder="En majuscules"></div>
             <div class="fg"><label class="flabel">Prénom(s) *</label><input class="finput" id="f-prenom"></div>
             <div class="fg"><label class="flabel">Date de naissance</label><input class="finput" type="date" id="f-ddn"></div>
             <div class="fg"><label class="flabel">Lieu de naissance</label><input class="finput" id="f-lieu-naiss" placeholder="Ville, Pays"></div>
+            <div class="fg"><label class="flabel">Nationalité</label><input class="finput" id="f-nationalite" placeholder="Ex : Française"></div>
+            <div class="fg"><label class="flabel">Profession</label><input class="finput" id="f-profession" placeholder="Ex : Commerçant..."></div>
+            <div class="fg"><label class="flabel">Régime matrimonial</label>
+              <select class="finput fselect" id="f-regime-matrimonial">
+                <option value="">—</option>
+                <option>Communauté légale réduite aux acquêts</option>
+                <option>Séparation de biens</option>
+                <option>Communauté universelle</option>
+                <option>Participation aux acquêts</option>
+                <option>Sans objet</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Type de pièce d'identité</label>
+              <select class="finput fselect" id="f-type-piece">
+                <option value="">—</option>
+                <option>Carte nationale d'identité</option>
+                <option>Passeport</option>
+                <option>Titre de séjour</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Numéro de la pièce</label><input class="finput" id="f-num-piece"></div>
+            <div class="fg"><label class="flabel">Date d'expiration</label><input class="finput" type="date" id="f-exp-piece"></div>
             <div class="fg full"><label class="flabel">Adresse *</label><input class="finput" id="f-adresse" placeholder="Numéro, rue, ville, pays"></div>
             <div class="fg"><label class="flabel">Email *</label><input class="finput" type="email" id="f-email" placeholder="client@email.com"></div>
             <div class="fg"><label class="flabel">Téléphone</label><input class="finput" id="f-tel" placeholder="+590 690 XX XX XX"></div>
@@ -328,23 +360,48 @@ textarea.finput{resize:vertical;min-height:80px;}
         </div>
       </div>
 
+      <!-- ÉTAPE 2 — SOCIÉTÉ -->
       <div class="card" id="step2" style="display:none">
-        <div class="card-header"><span class="card-title">Étape 2 — Société</span></div>
+        <div class="card-header"><span class="card-title">Étape 2 — Informations de la société</span></div>
         <div class="card-body">
           <div class="form-grid">
             <div class="fg"><label class="flabel">Forme juridique *</label>
-              <select class="finput fselect" id="f-forme"><option value="">Choisir...</option>
+              <select class="finput fselect" id="f-forme" onchange="toggleAssociesAdmin()">
+                <option value="">Choisir...</option>
                 <option>SARL</option><option>EURL</option><option>SAS</option><option>SASU</option>
                 <option>EI</option><option>SA</option><option>Association Loi 1901</option>
               </select>
             </div>
             <div class="fg"><label class="flabel">Dénomination *</label><input class="finput" id="f-denomination" placeholder="Nom de la société"></div>
-            <div class="fg full"><label class="flabel">Objet social *</label><textarea class="finput" id="f-objet" placeholder="Décrire l'activité..."></textarea></div>
-            <div class="fg"><label class="flabel">Capital (€)</label><input class="finput" type="number" id="f-capital" placeholder="Ex : 500"></div>
-            <div class="fg"><label class="flabel">Siège social *</label><input class="finput" id="f-siege" placeholder="Adresse complète"></div>
-            <div class="fg"><label class="flabel">Durée</label><input class="finput" id="f-duree" value="99 ans"></div>
-            <div class="fg"><label class="flabel">Date début d'activité</label><input class="finput" type="date" id="f-debut"></div>
+            <div class="fg"><label class="flabel">Sigle</label><input class="finput" id="f-sigle" placeholder="Ex : MCD (optionnel)"></div>
             <div class="fg"><label class="flabel">Qualité du dirigeant</label><input class="finput" id="f-qualite" placeholder="Ex : Gérant, Président"></div>
+            <div class="fg full"><label class="flabel">Objet social *</label><textarea class="finput" id="f-objet" placeholder="Décrire l'activité principale..."></textarea></div>
+            <div class="fg full"><label class="flabel">Activité secondaire</label><textarea class="finput" id="f-activite-sec" placeholder="Activité secondaire (optionnel)..."></textarea></div>
+            <div class="fg full"><label class="flabel">Siège social *</label><input class="finput" id="f-siege" placeholder="Adresse complète du siège"></div>
+            <div class="fg"><label class="flabel">Type de domiciliation</label>
+              <select class="finput fselect" id="f-type-domiciliation">
+                <option value="">—</option>
+                <option>Local propre</option><option>Chez le dirigeant</option>
+                <option>Centre d'affaires</option><option>Société de domiciliation</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Durée de la société</label><input class="finput" id="f-duree" value="99 ans"></div>
+            <div class="fg"><label class="flabel">Date de début d'activité</label><input class="finput" type="date" id="f-debut"></div>
+            <div class="fg"><label class="flabel">Date de clôture</label>
+              <select class="finput fselect" id="f-cloture">
+                <option value="31 décembre">31 décembre</option>
+                <option value="31 mars">31 mars</option>
+                <option value="30 juin">30 juin</option>
+                <option value="30 septembre">30 septembre</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Option fiscale</label>
+              <select class="finput fselect" id="f-option-fiscale">
+                <option value="">—</option>
+                <option value="IS">Impôt sur les Sociétés (IS)</option>
+                <option value="IR">Impôt sur le Revenu (IR)</option>
+              </select>
+            </div>
           </div>
           <div class="divider"></div>
           <div style="display:flex;justify-content:space-between">
@@ -354,15 +411,23 @@ textarea.finput{resize:vertical;min-height:80px;}
         </div>
       </div>
 
+      <!-- ÉTAPE 3 — CAPITAL -->
       <div class="card" id="step3" style="display:none">
-        <div class="card-header"><span class="card-title">Étape 3 — Filiation</span><span class="badge badge-gray">Optionnel</span></div>
+        <div class="card-header"><span class="card-title">Étape 3 — Capital social</span></div>
         <div class="card-body">
-          <div style="background:var(--blue-light);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--blue);margin-bottom:18px">ℹ️ Pour la déclaration de non-condamnation avec filiation.</div>
           <div class="form-grid">
-            <div class="fg"><label class="flabel">Nom du père</label><input class="finput" id="f-nom-pere"></div>
-            <div class="fg"><label class="flabel">Prénom du père</label><input class="finput" id="f-prenom-pere"></div>
-            <div class="fg"><label class="flabel">Nom de la mère</label><input class="finput" id="f-nom-mere" placeholder="Nom de naissance"></div>
-            <div class="fg"><label class="flabel">Prénom de la mère</label><input class="finput" id="f-prenom-mere"></div>
+            <div class="fg"><label class="flabel">Montant du capital (€)</label><input class="finput" type="number" id="f-capital" placeholder="Ex : 500"></div>
+            <div class="fg"><label class="flabel">Valeur nominale d'une part (€)</label><input class="finput" type="number" id="f-valeur-nominale" placeholder="Ex : 10"></div>
+            <div class="fg"><label class="flabel">Mode de libération</label>
+              <select class="finput fselect" id="f-mode-liberation">
+                <option value="">—</option>
+                <option value="total">Libération totale</option>
+                <option value="partiel">Libération partielle</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">% libéré à la constitution</label><input class="finput" type="number" id="f-pct-libere" placeholder="Ex : 20" min="0" max="100"></div>
+            <div class="fg"><label class="flabel">Banque dépositaire</label><input class="finput" id="f-banque" placeholder="Nom de la banque"></div>
+            <div class="fg"><label class="flabel">Date du dépôt de capital</label><input class="finput" type="date" id="f-date-depot"></div>
           </div>
           <div class="divider"></div>
           <div style="display:flex;justify-content:space-between">
@@ -372,8 +437,51 @@ textarea.finput{resize:vertical;min-height:80px;}
         </div>
       </div>
 
+      <!-- ÉTAPE 4 — FILIATION -->
       <div class="card" id="step4" style="display:none">
-        <div class="card-header"><span class="card-title">Étape 4 — Finaliser</span></div>
+        <div class="card-header"><span class="card-title">Étape 4 — Filiation</span><span class="badge badge-gray">Déclaration de non-condamnation</span></div>
+        <div class="card-body">
+          <div style="background:var(--blue-light);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--blue);margin-bottom:18px">ℹ️ Nécessaire pour la déclaration de non-condamnation avec filiation.</div>
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Nom du père</label><input class="finput" id="f-nom-pere"></div>
+            <div class="fg"><label class="flabel">Prénom du père</label><input class="finput" id="f-prenom-pere"></div>
+            <div class="fg"><label class="flabel">Nom de la mère</label><input class="finput" id="f-nom-mere" placeholder="Nom de naissance"></div>
+            <div class="fg"><label class="flabel">Prénom de la mère</label><input class="finput" id="f-prenom-mere"></div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:space-between">
+            <button class="btn btn-secondary" onclick="goStep(3)">← Retour</button>
+            <button class="btn btn-navy" onclick="goStep(5)">Étape suivante →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 5 — ASSOCIÉS -->
+      <div class="card" id="step5" style="display:none">
+        <div class="card-header">
+          <span class="card-title">Étape 5 — Associés / Actionnaires</span>
+          <button class="btn btn-primary btn-sm" id="btn-add-assoc-admin" onclick="addAssocieAdmin()" style="display:none">+ Ajouter un associé</button>
+        </div>
+        <div class="card-body">
+          <div id="info-assoc-admin" style="background:var(--blue-light);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--blue);margin-bottom:18px">
+            ℹ️ Sélectionnez d'abord la forme juridique à l'étape 2.
+          </div>
+          <div id="assoc-admin-list"></div>
+          <div id="no-assoc-admin" style="text-align:center;padding:20px;color:var(--text-light);font-size:13px;display:none">
+            Aucun associé ajouté. Cliquez sur "+ Ajouter un associé".
+          </div>
+        </div>
+        <div class="card-body" style="border-top:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between">
+            <button class="btn btn-secondary" onclick="goStep(4)">← Retour</button>
+            <button class="btn btn-navy" onclick="goStep(6)">Étape suivante →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 6 — FINALISER -->
+      <div class="card" id="step6" style="display:none">
+        <div class="card-header"><span class="card-title">Étape 6 — Finaliser</span></div>
         <div class="card-body">
           <div class="form-grid">
             <div class="fg"><label class="flabel">Statut du dossier</label>
@@ -390,7 +498,7 @@ textarea.finput{resize:vertical;min-height:80px;}
           </div>
           <div class="divider"></div>
           <div style="display:flex;justify-content:space-between">
-            <button class="btn btn-secondary" onclick="goStep(3)">← Retour</button>
+            <button class="btn btn-secondary" onclick="goStep(5)">← Retour</button>
             <button class="btn btn-green" onclick="saveDossier()">✓ Enregistrer le dossier</button>
           </div>
         </div>
@@ -963,53 +1071,218 @@ function badgeStatut(s) {
   return m[s] || '<span class="badge badge-gray"><span class="badge-dot"></span>Nouveau</span>';
 }
 
-// ══ STEPPER ══
+// ══ STEPPER (6 étapes) ══
 function goStep(n) {
-  if (n>currentStep && !validateStep(currentStep)) return;
-  for(let i=1;i<=4;i++) {
-    document.getElementById('step'+i).style.display = i===n?'block':'none';
-    const sc=document.getElementById('sc'+i), sl=document.getElementById('sl'+i);
-    if(i<n){sc.className='step-circle done';sc.textContent='✓';sl.className='step-label';}
-    else if(i===n){sc.className='step-circle active';sc.textContent=i;sl.className='step-label active';}
-    else{sc.className='step-circle pending';sc.textContent=i;sl.className='step-label';}
-    if(i<4) document.getElementById('line'+i).className='step-line'+(i<n?' done':'');
+  if (n > currentStep && !validateStep(currentStep)) return;
+  const total = 6;
+  for(let i=1; i<=total; i++) {
+    const stepEl = document.getElementById('step'+i);
+    if(stepEl) stepEl.style.display = i===n ? 'block' : 'none';
+    const sc = document.getElementById('sc'+i);
+    const sl = document.getElementById('sl'+i);
+    if(!sc || !sl) continue;
+    if(i<n){ sc.className='step-circle done'; sc.textContent='✓'; sl.className='step-label'; }
+    else if(i===n){ sc.className='step-circle active'; sc.textContent=i; sl.className='step-label active'; }
+    else{ sc.className='step-circle pending'; sc.textContent=i; sl.className='step-label'; }
+    if(i<total) {
+      const line = document.getElementById('line'+i);
+      if(line) line.className='step-line'+(i<n?' done':'');
+    }
   }
-  currentStep=n; hideAlert('nouveau');
+  currentStep=n;
+  hideAlert('nouveau');
+  // Afficher/cacher bouton associés à l'étape 5
+  if(n===5) toggleAssociesAdmin();
 }
 
 function validateStep(n) {
-  if(n===1){if(!v('f-nom')||!v('f-prenom')||!v('f-email')||!v('f-adresse')){showAlert('nouveau','Veuillez remplir les champs obligatoires (*).','error');return false;}}
-  if(n===2){if(!v('f-forme')||!v('f-denomination')||!v('f-objet')||!v('f-siege')){showAlert('nouveau','Veuillez remplir les champs obligatoires (*).','error');return false;}}
+  if(n===1){
+    if(!v('f-nom')||!v('f-prenom')||!v('f-email')||!v('f-adresse')){
+      showAlert('nouveau','Veuillez remplir les champs obligatoires (*).','error'); return false;
+    }
+  }
+  if(n===2){
+    if(!v('f-forme')||!v('f-denomination')||!v('f-objet')||!v('f-siege')){
+      showAlert('nouveau','Veuillez remplir les champs obligatoires (*).','error'); return false;
+    }
+  }
   return true;
+}
+
+// ══ ASSOCIÉS ADMIN ══
+let associesAdmin = [];
+let associeAdminCount = 0;
+
+function toggleAssociesAdmin() {
+  const forme = document.getElementById('f-forme')?.value || '';
+  const formesSansAssocies = ['EURL','SASU','EI'];
+  const btn = document.getElementById('btn-add-assoc-admin');
+  const info = document.getElementById('info-assoc-admin');
+  const noAssoc = document.getElementById('no-assoc-admin');
+  if(!btn) return;
+  if(formesSansAssocies.includes(forme)) {
+    btn.style.display = 'none';
+    if(info) info.innerHTML = `ℹ️ La forme <strong>${forme}</strong> est unipersonnelle — pas d'autres associés.`;
+    if(noAssoc) noAssoc.style.display = 'none';
+  } else if(forme) {
+    btn.style.display = 'inline-flex';
+    if(info) info.innerHTML = `ℹ️ Le dirigeant principal est déjà renseigné. Ajoutez ici les <strong>autres</strong> associés.`;
+    if(associesAdmin.length === 0 && noAssoc) noAssoc.style.display = 'block';
+  } else {
+    btn.style.display = 'none';
+    if(info) info.innerHTML = `ℹ️ Sélectionnez d'abord la forme juridique à l'étape 2.`;
+  }
+}
+
+function addAssocieAdmin() {
+  associeAdminCount++;
+  const id = associeAdminCount;
+  const noAssoc = document.getElementById('no-assoc-admin');
+  if(noAssoc) noAssoc.style.display = 'none';
+
+  const div = document.createElement('div');
+  div.id = `aa-${id}`;
+  div.style.cssText = 'background:var(--bg);border-radius:14px;padding:22px;margin-bottom:16px;border:1.5px solid var(--border)';
+  div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div style="font-weight:700;font-size:14px;color:var(--navy)">👤 Associé ${id}</div>
+      <button class="btn btn-danger btn-sm" onclick="removeAssocieAdmin(${id})">✕ Supprimer</button>
+    </div>
+    <div class="form-grid">
+      <div class="fg"><label class="flabel">Civilité</label>
+        <select class="finput fselect" id="aa${id}-civilite"><option value="">—</option><option>M.</option><option>Mme</option></select></div>
+      <div class="fg"><label class="flabel">Situation matrimoniale</label>
+        <select class="finput fselect" id="aa${id}-matrimonial">
+          <option value="">—</option><option>Célibataire</option><option>Marié(e)</option>
+          <option>Pacsé(e)</option><option>Divorcé(e)</option><option>Veuf/Veuve</option>
+        </select></div>
+      <div class="fg"><label class="flabel">Nom *</label><input class="finput" id="aa${id}-nom" placeholder="En majuscules"></div>
+      <div class="fg"><label class="flabel">Prénom *</label><input class="finput" id="aa${id}-prenom"></div>
+      <div class="fg"><label class="flabel">Date de naissance</label><input class="finput" type="date" id="aa${id}-ddn"></div>
+      <div class="fg"><label class="flabel">Lieu de naissance</label><input class="finput" id="aa${id}-lieu" placeholder="Ville, Pays"></div>
+      <div class="fg"><label class="flabel">Nationalité</label><input class="finput" id="aa${id}-nationalite"></div>
+      <div class="fg"><label class="flabel">Profession</label><input class="finput" id="aa${id}-profession"></div>
+      <div class="fg"><label class="flabel">Régime matrimonial</label>
+        <select class="finput fselect" id="aa${id}-regime">
+          <option value="">—</option>
+          <option>Communauté légale réduite aux acquêts</option>
+          <option>Séparation de biens</option>
+          <option>Communauté universelle</option>
+          <option>Participation aux acquêts</option>
+          <option>Sans objet</option>
+        </select></div>
+      <div class="fg"><label class="flabel">Email</label><input class="finput" type="email" id="aa${id}-email"></div>
+      <div class="fg"><label class="flabel">Téléphone</label><input class="finput" id="aa${id}-tel"></div>
+      <div class="fg full"><label class="flabel">Adresse complète</label><input class="finput" id="aa${id}-adresse"></div>
+    </div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:700;color:var(--text-light);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">Parts / Apport</div>
+      <div class="form-grid">
+        <div class="fg"><label class="flabel">Nombre de parts</label><input class="finput" type="number" id="aa${id}-parts" placeholder="Ex : 50" min="1"></div>
+        <div class="fg"><label class="flabel">Montant apporté (€)</label><input class="finput" type="number" id="aa${id}-montant" placeholder="Ex : 500"></div>
+        <div class="fg"><label class="flabel">Nature de l'apport</label>
+          <select class="finput fselect" id="aa${id}-nature">
+            <option value="">—</option>
+            <option>Numéraire (espèces)</option>
+            <option>Nature (bien matériel)</option>
+            <option>Industrie (compétences)</option>
+          </select></div>
+        <div class="fg"><label class="flabel">Qualité dans la société</label>
+          <input class="finput" id="aa${id}-qualite" placeholder="Ex : Associé(e), Cogérant(e)"></div>
+      </div>
+    </div>`;
+  document.getElementById('assoc-admin-list').appendChild(div);
+  associesAdmin.push(id);
+}
+
+function removeAssocieAdmin(id) {
+  document.getElementById(`aa-${id}`)?.remove();
+  associesAdmin = associesAdmin.filter(a => a !== id);
+  const noAssoc = document.getElementById('no-assoc-admin');
+  if(associesAdmin.length === 0 && noAssoc) noAssoc.style.display = 'block';
+}
+
+function getAssociesAdminData() {
+  return associesAdmin.map(id => ({
+    civilite: document.getElementById(`aa${id}-civilite`)?.value || '',
+    matrimonial: document.getElementById(`aa${id}-matrimonial`)?.value || '',
+    regime: document.getElementById(`aa${id}-regime`)?.value || '',
+    nom: document.getElementById(`aa${id}-nom`)?.value?.trim().toUpperCase() || '',
+    prenom: document.getElementById(`aa${id}-prenom`)?.value?.trim() || '',
+    date_naissance: document.getElementById(`aa${id}-ddn`)?.value || '',
+    lieu_naissance: document.getElementById(`aa${id}-lieu`)?.value?.trim() || '',
+    nationalite: document.getElementById(`aa${id}-nationalite`)?.value?.trim() || '',
+    profession: document.getElementById(`aa${id}-profession`)?.value?.trim() || '',
+    telephone: document.getElementById(`aa${id}-tel`)?.value?.trim() || '',
+    email: document.getElementById(`aa${id}-email`)?.value?.trim() || '',
+    adresse: document.getElementById(`aa${id}-adresse`)?.value?.trim() || '',
+    parts: document.getElementById(`aa${id}-parts`)?.value || '',
+    montant: document.getElementById(`aa${id}-montant`)?.value || '',
+    nature_apport: document.getElementById(`aa${id}-nature`)?.value || '',
+    qualite: document.getElementById(`aa${id}-qualite`)?.value?.trim() || ''
+  })).filter(a => a.nom || a.prenom);
 }
 
 function v(id){return document.getElementById(id)?.value?.trim()||'';}
 
 function resetForm() {
-  ['f-civilite','f-nationalite','f-nom','f-prenom','f-ddn','f-lieu-naiss','f-adresse','f-email','f-tel',
-   'f-forme','f-denomination','f-objet','f-capital','f-siege','f-debut','f-qualite',
-   'f-nom-pere','f-prenom-pere','f-nom-mere','f-prenom-mere','f-notes'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.value='';
-  });
-  document.getElementById('f-duree').value='99 ans';
-  document.getElementById('f-statut').value='en_cours';
-  document.getElementById('f-progression').value='30';
+  ['f-civilite','f-matrimonial','f-nationalite','f-nom','f-prenom',
+   'f-ddn','f-lieu-naiss','f-adresse','f-email','f-tel',
+   'f-profession','f-regime-matrimonial','f-type-piece','f-num-piece','f-exp-piece',
+   'f-forme','f-denomination','f-sigle','f-objet','f-activite-sec','f-qualite',
+   'f-siege','f-type-domiciliation','f-debut','f-option-fiscale',
+   'f-capital','f-valeur-nominale','f-mode-liberation','f-pct-libere',
+   'f-banque','f-date-depot',
+   'f-nom-pere','f-prenom-pere','f-nom-mere','f-prenom-mere','f-notes'
+  ].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const duree=document.getElementById('f-duree'); if(duree) duree.value='99 ans';
+  const cloture=document.getElementById('f-cloture'); if(cloture) cloture.value='31 décembre';
+  const statut=document.getElementById('f-statut'); if(statut) statut.value='en_cours';
+  const prog=document.getElementById('f-progression'); if(prog) prog.value='30';
+  // Reset associés admin
+  associesAdmin=[];
+  associeAdminCount=0;
+  const list=document.getElementById('assoc-admin-list');
+  if(list) list.innerHTML='';
+  const noAssoc=document.getElementById('no-assoc-admin');
+  if(noAssoc) noAssoc.style.display='none';
   goStep(1);
 }
 
 // ══ SAVE NOUVEAU ══
 async function saveDossier() {
   const numero = await getNextDossierNum();
+  const associesData = getAssociesAdminData();
   const {error} = await sb.from('dossiers').insert([{
     numero,
-    civilite:v('f-civilite'), nom:v('f-nom').toUpperCase(), prenom:v('f-prenom'), email:v('f-email'),
-    telephone:v('f-tel'), date_naissance:v('f-ddn')||null, lieu_naissance:v('f-lieu-naiss'),
-    nationalite:v('f-nationalite'), adresse:v('f-adresse'), forme_juridique:v('f-forme'),
-    denomination:v('f-denomination'), objet_social:v('f-objet'), capital:v('f-capital')||null,
-    siege_social:v('f-siege'), duree:v('f-duree'), date_debut:v('f-debut')||null,
-    qualite:v('f-qualite'), nom_pere:v('f-nom-pere'), prenom_pere:v('f-prenom-pere'),
+    // Identité
+    civilite:v('f-civilite'), nom:v('f-nom').toUpperCase(), prenom:v('f-prenom'),
+    email:v('f-email'), telephone:v('f-tel'),
+    date_naissance:v('f-ddn')||null, lieu_naissance:v('f-lieu-naiss'),
+    nationalite:v('f-nationalite'), adresse:v('f-adresse'),
+    matrimonial:v('f-matrimonial'), profession:v('f-profession'),
+    regime_matrimonial:v('f-regime-matrimonial'),
+    type_piece:v('f-type-piece'), num_piece:v('f-num-piece'),
+    exp_piece:v('f-exp-piece')||null,
+    // Société
+    forme_juridique:v('f-forme'), denomination:v('f-denomination'),
+    sigle:v('f-sigle'), objet_social:v('f-objet'),
+    activite_secondaire:v('f-activite-sec'), qualite:v('f-qualite'),
+    siege_social:v('f-siege'), type_domiciliation:v('f-type-domiciliation'),
+    duree:v('f-duree'), date_debut:v('f-debut')||null,
+    date_cloture:v('f-cloture'), option_fiscale:v('f-option-fiscale'),
+    // Capital
+    capital:v('f-capital')||null, valeur_nominale:v('f-valeur-nominale')||null,
+    mode_liberation:v('f-mode-liberation'), pct_libere:v('f-pct-libere')||null,
+    banque_depositaire:v('f-banque'), date_depot_capital:v('f-date-depot')||null,
+    // Filiation
+    nom_pere:v('f-nom-pere'), prenom_pere:v('f-prenom-pere'),
     nom_mere:v('f-nom-mere'), prenom_mere:v('f-prenom-mere'),
-    statut:v('f-statut'), progression:parseInt(v('f-progression'))||30, notes:v('f-notes')
+    // Associés
+    associes: associesData.length ? associesData : null,
+    // Suivi
+    statut:v('f-statut'), progression:parseInt(v('f-progression'))||30,
+    notes:v('f-notes')
   }]);
   if(error){showAlert('nouveau','❌ Erreur : '+error.message,'error');return;}
   showAlert('nouveau',`✅ Dossier ${numero} enregistré avec succès !`,'success');
