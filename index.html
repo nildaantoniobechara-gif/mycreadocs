@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyCreaDocs</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Crimson+Pro:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --navy:#1A2E4A; --navy2:#243D5E;
+  --blue:#2E86AB; --blue-light:#EBF4F8;
+  --green:#52B788; --green-light:#EDFAF3;
+  --terra:#E76F51; --terra-light:#FEF0EB;
+  --purple:#7C5CBF; --purple-light:#F0EBFF;
+  --orange:#F4A261; --orange-light:#FEF4E8;
+  --yellow:#E9C46A; --yellow-light:#FEFAE8;
+  --bg:#F0F2F5; --white:#fff;
+  --text:#2D3748; --text-light:#718096; --border:#E2E8F0;
+  --shadow:0 2px 12px rgba(26,46,74,0.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* VIEWS */
+.view{display:none;}
+#view-login.active{display:flex;min-height:100vh;background:linear-gradient(135deg,#1A2E4A 0%,#2E86AB 100%);align-items:center;justify-content:center;}
+#view-app.active{display:flex;min-height:100vh;}
+
+/* LOGIN */
+.login-box{background:white;border-radius:24px;padding:48px 44px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+.logo-name{font-family:'Crimson Pro',serif;font-size:32px;font-weight:600;color:var(--navy);text-align:center;}
+.logo-sub{font-size:11px;color:var(--text-light);letter-spacing:0.1em;text-transform:uppercase;text-align:center;margin-top:4px;margin-bottom:36px;}
+.form-group{margin-bottom:18px;}
+.form-label{display:block;font-size:11px;font-weight:700;color:var(--text-light);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:7px;}
+.form-input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-family:'Sora',sans-serif;font-size:14px;color:var(--text);outline:none;transition:all 0.2s;}
+.form-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,134,171,0.12);}
+.btn-login{width:100%;padding:13px;background:var(--navy);color:white;border:none;border-radius:12px;font-family:'Sora',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;transition:all 0.2s;}
+.btn-login:hover{background:var(--navy2);transform:translateY(-1px);}
+.btn-login:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.login-error{background:var(--terra-light);color:#C05030;border-radius:10px;padding:10px 14px;font-size:13px;margin-top:14px;display:none;}
+.login-divider{height:1px;background:var(--border);margin:28px 0;}
+.login-footer{text-align:center;font-size:11px;color:var(--text-light);}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:var(--navy);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;}
+.sidebar-logo{padding:28px 24px 22px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.sidebar-logo-name{font-family:'Crimson Pro',serif;font-size:22px;font-weight:600;color:white;}
+.sidebar-logo-sub{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-top:3px;}
+.sidebar-nav{flex:1;padding:18px 12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
+.nav-section{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.3);padding:14px 12px 5px;}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,0.6);font-size:13px;font-weight:500;border:none;background:transparent;width:100%;text-align:left;transition:all 0.2s;font-family:'Sora',sans-serif;}
+.nav-btn:hover{background:rgba(255,255,255,0.07);color:white;}
+.nav-btn.active{background:rgba(46,134,171,0.25);color:white;}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);flex-shrink:0;}
+.nav-btn.active .nav-dot{background:var(--blue);}
+.sidebar-user{padding:16px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px;}
+.user-avatar{width:34px;height:34px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;}
+.user-name{font-size:12px;font-weight:600;color:white;}
+.user-role-txt{font-size:10px;color:rgba(255,255,255,0.4);}
+.btn-logout{background:none;border:none;color:rgba(255,255,255,0.4);font-size:11px;cursor:pointer;margin-left:auto;font-family:'Sora',sans-serif;padding:4px;}
+.btn-logout:hover{color:var(--terra);}
+
+/* MAIN */
+.main{margin-left:240px;padding:32px;flex:1;}
+.page{display:none;animation:fadeIn 0.3s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.page-title{font-family:'Crimson Pro',serif;font-size:28px;font-weight:600;color:var(--navy);}
+.page-sub{font-size:13px;color:var(--text-light);margin-top:2px;}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:10px;font-family:'Sora',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+.btn-primary{background:var(--blue);color:white;} .btn-primary:hover{background:#2475A0;transform:translateY(-1px);}
+.btn-navy{background:var(--navy);color:white;} .btn-navy:hover{background:var(--navy2);transform:translateY(-1px);}
+.btn-secondary{background:white;color:var(--text);border:1px solid var(--border);} .btn-secondary:hover{background:var(--bg);}
+.btn-green{background:var(--green);color:white;} .btn-green:hover{background:#45A87A;}
+.btn-danger{background:var(--terra-light);color:var(--terra);border:1px solid #F5C4B5;} .btn-danger:hover{background:#FDDDD5;}
+.btn-purple{background:var(--purple);color:white;} .btn-purple:hover{background:#6A4DAD;}
+.btn-sm{padding:6px 12px;font-size:11px;border-radius:8px;}
+.btn-block{width:100%;justify-content:center;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px;}
+.stat-card{background:white;border-radius:14px;padding:18px;box-shadow:var(--shadow);transition:all 0.25s;}
+.stat-card:hover{transform:translateY(-2px);}
+.stat-label{font-size:10px;font-weight:600;color:var(--text-light);letter-spacing:0.06em;text-transform:uppercase;}
+.stat-value{font-family:'Crimson Pro',serif;font-size:32px;font-weight:600;color:var(--navy);line-height:1.1;margin:4px 0 2px;}
+.stat-sub{font-size:10px;font-weight:600;}
+
+/* CARD */
+.card{background:white;border-radius:16px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;}
+.card-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:14px;font-weight:700;color:var(--navy);}
+.card-body{padding:22px;}
+
+/* TABLE */
+.table{width:100%;border-collapse:collapse;}
+.table th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-light);padding:10px 16px;border-bottom:1px solid var(--border);background:var(--bg);}
+.table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
+.table tr:last-child td{border-bottom:none;}
+.table tbody tr:hover td{background:var(--blue-light);}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-dot{width:5px;height:5px;border-radius:50%;}
+.badge-green{background:var(--green-light);color:#2A8A5E;} .badge-green .badge-dot{background:var(--green);}
+.badge-blue{background:var(--blue-light);color:#1A6A8A;} .badge-blue .badge-dot{background:var(--blue);}
+.badge-terra{background:var(--terra-light);color:#C05030;} .badge-terra .badge-dot{background:var(--terra);}
+.badge-purple{background:var(--purple-light);color:#5A3D9E;} .badge-purple .badge-dot{background:var(--purple);}
+.badge-orange{background:var(--orange-light);color:#C47A2A;} .badge-orange .badge-dot{background:var(--orange);}
+.badge-gray{background:#F0F2F5;color:#718096;} .badge-gray .badge-dot{background:#A0AEC0;}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.fg{display:flex;flex-direction:column;gap:6px;}
+.fg.full{grid-column:1/-1;}
+.flabel{font-size:11px;font-weight:700;color:var(--text-light);letter-spacing:0.06em;text-transform:uppercase;}
+.finput{padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);background:white;outline:none;transition:all 0.2s;width:100%;}
+.finput:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,134,171,0.1);}
+.fselect{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23718096' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+textarea.finput{resize:vertical;min-height:80px;}
+
+/* STEPPER */
+.stepper{display:flex;align-items:center;margin-bottom:28px;}
+.step{display:flex;align-items:center;gap:8px;}
+.step-circle{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.step-circle.done{background:var(--green);color:white;}
+.step-circle.active{background:var(--blue);color:white;box-shadow:0 0 0 4px rgba(46,134,171,0.2);}
+.step-circle.pending{background:var(--border);color:var(--text-light);}
+.step-label{font-size:12px;font-weight:600;color:var(--text-light);white-space:nowrap;}
+.step-label.active{color:var(--navy);}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 10px;min-width:20px;}
+.step-line.done{background:var(--green);}
+
+/* DOC CARDS */
+.doc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.doc-card{background:white;border-radius:14px;padding:18px;box-shadow:var(--shadow);border:2px solid transparent;cursor:pointer;transition:all 0.2s;}
+.doc-card:hover{border-color:var(--blue);transform:translateY(-2px);}
+.doc-card.selected{border-color:var(--blue);background:var(--blue-light);}
+.doc-icon{font-size:28px;margin-bottom:10px;}
+.doc-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:5px;}
+.doc-desc{font-size:11px;color:var(--text-light);line-height:1.5;}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--border);border-radius:14px;padding:32px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);}
+.upload-zone:hover{border-color:var(--blue);background:var(--blue-light);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:20px;padding:32px;width:90%;max-width:560px;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;}
+.modal-title{font-family:'Crimson Pro',serif;font-size:22px;font-weight:600;color:var(--navy);margin-bottom:20px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;}
+
+/* MISC */
+.divider{height:1px;background:var(--border);margin:22px 0;}
+.tag{display:inline-flex;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:600;background:var(--blue-light);color:var(--blue);}
+.progress-bar{height:6px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:5px;}
+.progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--blue),var(--green));}
+.avatar{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.alert{padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:16px;}
+.alert-success{background:var(--green-light);color:#2A8A5E;}
+.alert-error{background:var(--terra-light);color:#C05030;}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);}
+.info-row:last-child{border-bottom:none;}
+.info-key{font-size:12px;color:var(--text-light);}
+.info-val{font-size:13px;font-weight:600;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+
+/* TIMELINE */
+.tl{display:flex;flex-direction:column;}
+.tl-item{display:flex;gap:14px;padding-bottom:20px;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-left{display:flex;flex-direction:column;align-items:center;}
+.tl-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+.tl-dot.done{background:var(--green);}
+.tl-dot.active{background:var(--blue);box-shadow:0 0 0 4px rgba(46,134,171,0.2);}
+.tl-dot.pending{background:var(--border);}
+.tl-line{width:2px;flex:1;margin-top:4px;}
+.tl-line.done{background:var(--green);}
+.tl-line.pending{background:var(--border);}
+.tl-title{font-size:13px;font-weight:700;color:var(--navy);}
+.tl-date{font-size:11px;color:var(--text-light);margin-top:2px;}
+.big-pct{font-family:'Crimson Pro',serif;font-size:52px;font-weight:600;color:var(--blue);text-align:center;}
+
+/* SIGNATURE BANNER */
+.signature-banner{background:linear-gradient(135deg,var(--purple-light),#E8E0FF);border:1.5px solid var(--purple);border-radius:14px;padding:20px;margin-bottom:20px;}
+.signature-banner h3{color:var(--purple);font-size:15px;font-weight:700;margin-bottom:8px;}
+.signature-banner p{font-size:13px;color:#5A3D9E;line-height:1.6;}
+
+/* PIECES LIST */
+.piece-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:10px;margin-bottom:8px;}
+.piece-item.received{background:var(--green-light);border:1px solid #C3EDD5;}
+.piece-item.pending{background:var(--bg);border:1px solid var(--border);}
+.piece-name{font-size:13px;font-weight:600;}
+.piece-date{font-size:11px;color:var(--text-light);margin-top:2px;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="view-login" class="view">
+  <div class="login-box">
+    <div class="logo-name">MyCreaDocs</div>
+    <div class="logo-sub">Gestion de dossiers · Création d'entreprise</div>
+    <div class="form-group">
+      <label class="form-label">Adresse email</label>
+      <input class="form-input" type="email" id="login-email" placeholder="votre@email.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mot de passe</label>
+      <input class="form-input" type="password" id="login-password" placeholder="••••••••">
+    </div>
+    <button class="btn-login" id="login-btn" onclick="doLogin()">Se connecter</button>
+    <div style="text-align:center;margin-top:12px">
+      <button onclick="forgotPassword()" style="background:none;border:none;color:var(--blue);font-size:12px;cursor:pointer;font-family:'Sora',sans-serif">Mot de passe oublié ?</button>
+    </div>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-divider"></div>
+    <div class="login-footer">MyCreaDocs · Tous droits réservés</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="view-app" class="view">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-name">MyCreaDocs</div>
+      <div class="sidebar-logo-sub" id="sidebar-role-label">...</div>
+    </div>
+    <nav class="sidebar-nav" id="sidebar-nav"></nav>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <div>
+        <div class="user-name" id="user-name">...</div>
+        <div class="user-role-txt" id="user-role-display">...</div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Déco.</button>
+    </div>
+  </div>
+
+  <div class="main" id="main-content">
+
+    <!-- ═══ ADMIN PAGES ═══ -->
+
+    <!-- DASHBOARD -->
+    <div class="page" id="page-dashboard">
+      <div class="topbar">
+        <div>
+          <div class="page-title">Tableau de bord</div>
+          <div class="page-sub" id="date-display"></div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <input style="padding:9px 14px 9px 36px;border:1.5px solid var(--border);border-radius:10px;font-family:'Sora',sans-serif;font-size:13px;outline:none;background:white url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2214%22 height=%2214%22 fill=%22none%22%3E%3Ccircle cx=%226%22 cy=%226%22 r=%225%22 stroke=%22%23718096%22 stroke-width=%221.5%22/%3E%3Cpath d=%22M10 10l3 3%22 stroke=%22%23718096%22 stroke-width=%221.5%22 stroke-linecap=%22round%22/%3E%3C/svg%3E') no-repeat 12px center;width:220px" placeholder="Rechercher..." oninput="filterDossiers(this.value)">
+          <button class="btn btn-navy" onclick="showPage('nouveau')">+ Nouveau dossier</button>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">En cours</div><div class="stat-value" id="s-encours">—</div><div class="stat-sub" style="color:var(--blue)">Actifs</div></div>
+        <div class="stat-card"><div class="stat-label">Attente infos</div><div class="stat-value" style="color:var(--orange)" id="s-infos">—</div><div class="stat-sub" style="color:var(--orange)">À compléter</div></div>
+        <div class="stat-card"><div class="stat-label">À signer</div><div class="stat-value" style="color:var(--purple)" id="s-signature">—</div><div class="stat-sub" style="color:var(--purple)">En attente</div></div>
+        <div class="stat-card"><div class="stat-label">Attente pièces</div><div class="stat-value" style="color:var(--terra)" id="s-pieces">—</div><div class="stat-sub" style="color:var(--terra)">Manquantes</div></div>
+        <div class="stat-card"><div class="stat-label">Terminés</div><div class="stat-value" style="color:var(--green)" id="s-termines">—</div><div class="stat-sub" style="color:var(--green)">Complets</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Dossiers récents</span><button class="btn btn-secondary btn-sm" onclick="showPage('dossiers')">Voir tout →</button></div>
+        <table class="table"><thead><tr><th>Client</th><th>Type</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody id="tb-recent"><tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:30px">Chargement...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- DOSSIERS -->
+    <div class="page" id="page-dossiers">
+      <div class="topbar">
+        <div><div class="page-title">Dossiers clients</div><div class="page-sub" id="dossiers-count">—</div></div>
+        <div style="display:flex;gap:10px">
+          <select class="finput fselect" style="width:200px" id="filter-statut" onchange="applyFilter()">
+            <option value="">Tous les statuts</option>
+            <option value="en_cours">En cours</option>
+            <option value="en_attente_infos">Attente infos</option>
+            <option value="en_attente_signature">Attente signature</option>
+            <option value="en_attente_pieces">Attente pièces</option>
+            <option value="termine">Terminés</option>
+          </select>
+          <button class="btn btn-navy" onclick="showPage('nouveau')">+ Nouveau dossier</button>
+        </div>
+      </div>
+      <div class="card">
+        <table class="table"><thead><tr><th>Client</th><th>Type</th><th>Progression</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody id="tb-dossiers"><tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:30px">Chargement...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- NOUVEAU DOSSIER -->
+    <div class="page" id="page-nouveau">
+      <div class="topbar"><div><div class="page-title">Nouveau dossier</div><div class="page-sub">Saisir les informations du client</div></div></div>
+      <div id="alert-nouveau" class="alert" style="display:none"></div>
+      <div class="stepper">
+        <div class="step"><div class="step-circle active" id="sc1">1</div><div class="step-label active" id="sl1">Identité</div></div>
+        <div class="step-line" id="line1"></div>
+        <div class="step"><div class="step-circle pending" id="sc2">2</div><div class="step-label pending" id="sl2">Société</div></div>
+        <div class="step-line" id="line2"></div>
+        <div class="step"><div class="step-circle pending" id="sc3">3</div><div class="step-label pending" id="sl3">Filiation</div></div>
+        <div class="step-line" id="line3"></div>
+        <div class="step"><div class="step-circle pending" id="sc4">4</div><div class="step-label pending" id="sl4">Finaliser</div></div>
+      </div>
+
+      <div class="card" id="step1">
+        <div class="card-header"><span class="card-title">Étape 1 — Identité</span><span class="badge badge-blue">Obligatoire</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Civilité</label><select class="finput fselect" id="f-civilite"><option value="">—</option><option>M.</option><option>Mme</option></select></div>
+            <div class="fg"><label class="flabel">Nationalité</label><input class="finput" id="f-nationalite" placeholder="Ex : Française"></div>
+            <div class="fg"><label class="flabel">Nom *</label><input class="finput" id="f-nom" placeholder="En majuscules"></div>
+            <div class="fg"><label class="flabel">Prénom(s) *</label><input class="finput" id="f-prenom"></div>
+            <div class="fg"><label class="flabel">Date de naissance</label><input class="finput" type="date" id="f-ddn"></div>
+            <div class="fg"><label class="flabel">Lieu de naissance</label><input class="finput" id="f-lieu-naiss" placeholder="Ville, Pays"></div>
+            <div class="fg full"><label class="flabel">Adresse *</label><input class="finput" id="f-adresse" placeholder="Numéro, rue, ville, pays"></div>
+            <div class="fg"><label class="flabel">Email *</label><input class="finput" type="email" id="f-email" placeholder="client@email.com"></div>
+            <div class="fg"><label class="flabel">Téléphone</label><input class="finput" id="f-tel" placeholder="+590 690 XX XX XX"></div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:flex-end"><button class="btn btn-navy" onclick="goStep(2)">Étape suivante →</button></div>
+        </div>
+      </div>
+
+      <div class="card" id="step2" style="display:none">
+        <div class="card-header"><span class="card-title">Étape 2 — Société</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Forme juridique *</label>
+              <select class="finput fselect" id="f-forme"><option value="">Choisir...</option>
+                <option>SARL</option><option>EURL</option><option>SAS</option><option>SASU</option>
+                <option>EI</option><option>SA</option><option>Association Loi 1901</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Dénomination *</label><input class="finput" id="f-denomination" placeholder="Nom de la société"></div>
+            <div class="fg full"><label class="flabel">Objet social *</label><textarea class="finput" id="f-objet" placeholder="Décrire l'activité..."></textarea></div>
+            <div class="fg"><label class="flabel">Capital (€)</label><input class="finput" type="number" id="f-capital" placeholder="Ex : 500"></div>
+            <div class="fg"><label class="flabel">Siège social *</label><input class="finput" id="f-siege" placeholder="Adresse complète"></div>
+            <div class="fg"><label class="flabel">Durée</label><input class="finput" id="f-duree" value="99 ans"></div>
+            <div class="fg"><label class="flabel">Date début d'activité</label><input class="finput" type="date" id="f-debut"></div>
+            <div class="fg"><label class="flabel">Qualité du dirigeant</label><input class="finput" id="f-qualite" placeholder="Ex : Gérant, Président"></div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:space-between">
+            <button class="btn btn-secondary" onclick="goStep(1)">← Retour</button>
+            <button class="btn btn-navy" onclick="goStep(3)">Étape suivante →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="step3" style="display:none">
+        <div class="card-header"><span class="card-title">Étape 3 — Filiation</span><span class="badge badge-gray">Optionnel</span></div>
+        <div class="card-body">
+          <div style="background:var(--blue-light);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--blue);margin-bottom:18px">ℹ️ Pour la déclaration de non-condamnation avec filiation.</div>
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Nom du père</label><input class="finput" id="f-nom-pere"></div>
+            <div class="fg"><label class="flabel">Prénom du père</label><input class="finput" id="f-prenom-pere"></div>
+            <div class="fg"><label class="flabel">Nom de la mère</label><input class="finput" id="f-nom-mere" placeholder="Nom de naissance"></div>
+            <div class="fg"><label class="flabel">Prénom de la mère</label><input class="finput" id="f-prenom-mere"></div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:space-between">
+            <button class="btn btn-secondary" onclick="goStep(2)">← Retour</button>
+            <button class="btn btn-navy" onclick="goStep(4)">Étape suivante →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="step4" style="display:none">
+        <div class="card-header"><span class="card-title">Étape 4 — Finaliser</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Statut du dossier</label>
+              <select class="finput fselect" id="f-statut">
+                <option value="en_cours">🔵 En cours</option>
+                <option value="en_attente_infos">🟠 En attente d'informations</option>
+                <option value="en_attente_signature">🟣 En attente de signature</option>
+                <option value="en_attente_pieces">🔴 En attente de pièces</option>
+                <option value="termine">✅ Terminé</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Progression (%)</label><input class="finput" type="number" id="f-progression" value="30" min="0" max="100"></div>
+            <div class="fg full"><label class="flabel">Notes internes</label><textarea class="finput" id="f-notes" placeholder="Notes pour le suivi du dossier..."></textarea></div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:space-between">
+            <button class="btn btn-secondary" onclick="goStep(3)">← Retour</button>
+            <button class="btn btn-green" onclick="saveDossier()">✓ Enregistrer le dossier</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GÉNÉRER -->
+    <div class="page" id="page-generer">
+      <div class="topbar"><div><div class="page-title">Générer un document</div><div class="page-sub">Sélectionner le client et le type</div></div></div>
+      <div id="alert-generer" class="alert" style="display:none"></div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header"><span class="card-title">1. Pour quel client ?</span></div>
+        <div class="card-body"><select class="finput fselect" style="max-width:400px" id="select-client-doc"><option value="">Sélectionner...</option></select></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">2. Type de document</span></div>
+        <div class="card-body">
+          <div class="doc-grid">
+            <div class="doc-card" onclick="selectDoc(this,'statuts_eurl')"><div class="doc-icon">📋</div><div class="doc-name">Statuts EURL</div><div class="doc-desc">SARL unipersonnelle</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'statuts_sarl')"><div class="doc-icon">📋</div><div class="doc-name">Statuts SARL</div><div class="doc-desc">Plusieurs associés</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'statuts_sas')"><div class="doc-icon">📋</div><div class="doc-name">Statuts SAS</div><div class="doc-desc">Société par actions simplifiée</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'statuts_sasu')"><div class="doc-icon">📋</div><div class="doc-name">Statuts SASU</div><div class="doc-desc">SAS unipersonnelle</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'creation_ei')"><div class="doc-icon">👤</div><div class="doc-name">Création EI</div><div class="doc-desc">Entreprise individuelle</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'association')"><div class="doc-icon">🤝</div><div class="doc-name">Association Loi 1901</div><div class="doc-desc">Statuts associatifs</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'non_condamnation')"><div class="doc-icon">🙋</div><div class="doc-name">Décl. non-condamnation</div><div class="doc-desc">Avec filiation complète</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'mandat_special')"><div class="doc-icon">✍️</div><div class="doc-name">Mandat spécial</div><div class="doc-desc">Acte déterminé</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'mandat_general')"><div class="doc-icon">✍️</div><div class="doc-name">Mandat général</div><div class="doc-desc">Représentation générale</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'pv_nomination')"><div class="doc-icon">🗳️</div><div class="doc-name">PV de nomination</div><div class="doc-desc">Assemblée constitutive</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'convention_logement')"><div class="doc-icon">🏠</div><div class="doc-name">Convention logement</div><div class="doc-desc">Mise à disposition</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'attestation_hebergement')"><div class="doc-icon">📄</div><div class="doc-name">Attestation hébergement</div><div class="doc-desc">Justificatif domicile</div></div>
+            <div class="doc-card" onclick="selectDoc(this,'liste_souscripteurs')"><div class="doc-icon">📝</div><div class="doc-name">Liste des souscripteurs</div><div class="doc-desc">Parts sociales / actions</div></div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:flex-end;gap:10px">
+            <button class="btn btn-purple" onclick="markSignature()">✍️ Marquer "À signer"</button>
+            <button class="btn btn-green" onclick="generateDoc()">📄 Générer le document</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODIFIER DOSSIER -->
+    <div class="page" id="page-modifier">
+      <div class="topbar">
+        <div><div class="page-title">Modifier le dossier</div><div class="page-sub" id="modifier-sub">—</div></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-danger" onclick="confirmDelete()">🗑️ Supprimer le dossier</button>
+          <button class="btn btn-secondary" onclick="showPage('dossiers')">← Retour</button>
+        </div>
+      </div>
+      <div id="alert-modifier" class="alert" style="display:none"></div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Identité</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Civilité</label><select class="finput fselect" id="m-civilite"><option value="">—</option><option>M.</option><option>Mme</option></select></div>
+            <div class="fg"><label class="flabel">Nationalité</label><input class="finput" id="m-nationalite"></div>
+            <div class="fg"><label class="flabel">Nom</label><input class="finput" id="m-nom"></div>
+            <div class="fg"><label class="flabel">Prénom</label><input class="finput" id="m-prenom"></div>
+            <div class="fg"><label class="flabel">Date de naissance</label><input class="finput" type="date" id="m-ddn"></div>
+            <div class="fg"><label class="flabel">Lieu de naissance</label><input class="finput" id="m-lieu-naiss"></div>
+            <div class="fg full"><label class="flabel">Adresse</label><input class="finput" id="m-adresse"></div>
+            <div class="fg"><label class="flabel">Email</label><input class="finput" type="email" id="m-email"></div>
+            <div class="fg"><label class="flabel">Téléphone</label><input class="finput" id="m-tel"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Société</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Forme juridique</label>
+              <select class="finput fselect" id="m-forme"><option value="">Choisir...</option>
+                <option>SARL</option><option>EURL</option><option>SAS</option><option>SASU</option><option>EI</option><option>SA</option><option>Association Loi 1901</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Dénomination</label><input class="finput" id="m-denomination"></div>
+            <div class="fg full"><label class="flabel">Objet social</label><textarea class="finput" id="m-objet"></textarea></div>
+            <div class="fg"><label class="flabel">Capital (€)</label><input class="finput" type="number" id="m-capital"></div>
+            <div class="fg"><label class="flabel">Siège social</label><input class="finput" id="m-siege"></div>
+            <div class="fg"><label class="flabel">Durée</label><input class="finput" id="m-duree"></div>
+            <div class="fg"><label class="flabel">Date début</label><input class="finput" type="date" id="m-debut"></div>
+            <div class="fg"><label class="flabel">Qualité dirigeant</label><input class="finput" id="m-qualite"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Filiation</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Nom du père</label><input class="finput" id="m-nom-pere"></div>
+            <div class="fg"><label class="flabel">Prénom du père</label><input class="finput" id="m-prenom-pere"></div>
+            <div class="fg"><label class="flabel">Nom de la mère</label><input class="finput" id="m-nom-mere"></div>
+            <div class="fg"><label class="flabel">Prénom de la mère</label><input class="finput" id="m-prenom-mere"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Suivi</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Statut</label>
+              <select class="finput fselect" id="m-statut">
+                <option value="en_cours">🔵 En cours</option>
+                <option value="en_attente_infos">🟠 En attente d'informations</option>
+                <option value="en_attente_signature">🟣 En attente de signature</option>
+                <option value="en_attente_pieces">🔴 En attente de pièces</option>
+                <option value="termine">✅ Terminé</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Progression (%)</label><input class="finput" type="number" id="m-progression" min="0" max="100"></div>
+            <div class="fg full"><label class="flabel">Notes internes</label><textarea class="finput" id="m-notes"></textarea></div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:flex-end">
+            <button class="btn btn-green" onclick="saveMod()">✓ Enregistrer les modifications</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCÈS -->
+    <div class="page" id="page-acces">
+      <div class="topbar"><div><div class="page-title">Accès clients</div><div class="page-sub">Gérer les identifiants</div></div></div>
+      <div class="card">
+        <div class="card-body">
+          <div style="background:var(--blue-light);border-radius:10px;padding:16px;font-size:13px;color:var(--navy);line-height:1.8">
+            <strong>Comment créer un accès client :</strong><br>
+            1. <strong>Supabase → Authentication → Users → Add user</strong> → entrer email + mot de passe<br>
+            2. Copier l'ID du nouvel utilisateur<br>
+            3. <strong>SQL Editor</strong> → coller :<br>
+            <code style="background:white;padding:4px 8px;border-radius:6px;font-size:12px">INSERT INTO profiles (id, role, nom, prenom) VALUES ('ID-ICI', 'client', 'NOM', 'PRENOM');</code>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Clients enregistrés</span></div>
+        <table class="table"><thead><tr><th>Nom</th><th>Email</th><th>Type</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody id="tb-acces"><tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:30px">Chargement...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- ═══ CLIENT PAGES ═══ -->
+
+    <!-- CLIENT HOME -->
+    <div class="page" id="page-client-home">
+      <div class="page-title" id="client-bonjour">Bonjour 👋</div>
+      <div class="page-sub" style="margin-bottom:28px" id="client-sub">Votre dossier de création</div>
+
+      <!-- BANNIÈRE SIGNATURE -->
+      <div id="signature-banner" style="display:none" class="signature-banner">
+        <h3>✍️ Action requise — Document à signer</h3>
+        <p>Votre document est prêt. Veuillez le télécharger, l'imprimer, le signer et nous le retourner via le bouton ci-dessous.</p>
+        <div style="margin-top:14px;display:flex;gap:10px">
+          <button class="btn btn-purple" onclick="showPage('client-upload')">📤 Envoyer le document signé</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Avancement de votre dossier</div></div>
+          <div class="card-body">
+            <div class="big-pct" id="c-pct">—</div>
+            <div style="font-size:13px;color:var(--text-light);text-align:center;margin-top:4px" id="c-statut-txt">Chargement...</div>
+            <div class="progress-bar" style="margin-top:16px"><div class="progress-fill" id="c-bar" style="width:0%"></div></div>
+            <div class="divider"></div>
+            <div class="tl" id="c-timeline"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Récapitulatif</div></div>
+          <div class="card-body" id="c-recap">Chargement...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENT INFOS -->
+    <div class="page" id="page-client-infos">
+      <div class="page-title" style="margin-bottom:4px">Mes informations</div>
+      <div class="page-sub" style="margin-bottom:28px">Complétez toutes vos informations pour la création de votre société</div>
+      <div id="alert-client-infos" class="alert" style="display:none"></div>
+
+      <!-- IDENTITÉ -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">👤 Identité du dirigeant</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Civilité</label><select class="finput fselect" id="ci-civilite"><option value="">—</option><option>M.</option><option>Mme</option></select></div>
+            <div class="fg"><label class="flabel">Situation matrimoniale</label>
+              <select class="finput fselect" id="ci-matrimonial">
+                <option value="">—</option><option>Célibataire</option><option>Marié(e)</option>
+                <option>Pacsé(e)</option><option>Divorcé(e)</option><option>Veuf/Veuve</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Nom</label><input class="finput" id="ci-nom" placeholder="En majuscules"></div>
+            <div class="fg"><label class="flabel">Prénom</label><input class="finput" id="ci-prenom"></div>
+            <div class="fg"><label class="flabel">Date de naissance</label><input class="finput" type="date" id="ci-ddn"></div>
+            <div class="fg"><label class="flabel">Lieu de naissance</label><input class="finput" id="ci-lieu-naiss" placeholder="Ville, Pays"></div>
+            <div class="fg"><label class="flabel">Nationalité</label><input class="finput" id="ci-nationalite" placeholder="Ex : Française"></div>
+            <div class="fg"><label class="flabel">Téléphone</label><input class="finput" id="ci-tel" placeholder="+590 690 XX XX XX"></div>
+            <div class="fg full"><label class="flabel">Adresse personnelle</label><input class="finput" id="ci-adresse" placeholder="Numéro, rue, ville, pays"></div>
+            <div class="fg"><label class="flabel">Profession</label><input class="finput" id="ci-profession" placeholder="Ex : Commerçant, Artisan..."></div>
+            <div class="fg"><label class="flabel">Régime matrimonial</label>
+              <select class="finput fselect" id="ci-regime">
+                <option value="">—</option>
+                <option>Communauté légale réduite aux acquêts</option>
+                <option>Séparation de biens</option>
+                <option>Communauté universelle</option>
+                <option>Participation aux acquêts</option>
+                <option>Sans objet (célibataire/divorcé/veuf)</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Type de pièce d'identité</label>
+              <select class="finput fselect" id="ci-type-piece">
+                <option value="">—</option>
+                <option>Carte nationale d'identité</option>
+                <option>Passeport</option>
+                <option>Titre de séjour</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Numéro de la pièce</label><input class="finput" id="ci-num-piece" placeholder="Numéro"></div>
+            <div class="fg"><label class="flabel">Date d'expiration</label><input class="finput" type="date" id="ci-exp-piece"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILIATION -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">👨‍👩‍👧 Filiation</span><span class="badge badge-gray">Pour la déclaration de non-condamnation</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Nom du père</label><input class="finput" id="ci-nom-pere"></div>
+            <div class="fg"><label class="flabel">Prénom du père</label><input class="finput" id="ci-prenom-pere"></div>
+            <div class="fg"><label class="flabel">Nom de la mère</label><input class="finput" id="ci-nom-mere" placeholder="Nom de naissance"></div>
+            <div class="fg"><label class="flabel">Prénom de la mère</label><input class="finput" id="ci-prenom-mere"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOCIÉTÉ -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">🏢 Informations de la société</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Forme juridique</label>
+              <select class="finput fselect" id="ci-forme" onchange="toggleAssocies()">
+                <option value="">Choisir...</option>
+                <option>SARL</option><option>EURL</option><option>SAS</option>
+                <option>SASU</option><option>EI</option><option>SA</option>
+                <option>Association Loi 1901</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Dénomination sociale</label><input class="finput" id="ci-denomination" placeholder="Nom de la société"></div>
+            <div class="fg full"><label class="flabel">Objet social</label><textarea class="finput" id="ci-objet" placeholder="Décrire l'activité principale de la société..."></textarea></div>
+            <div class="fg"><label class="flabel">Capital social (€)</label><input class="finput" type="number" id="ci-capital" placeholder="Ex : 500"></div>
+            <div class="fg"><label class="flabel">Durée de la société</label><input class="finput" id="ci-duree" value="99 ans"></div>
+            <div class="fg full"><label class="flabel">Siège social</label><input class="finput" id="ci-siege" placeholder="Adresse complète du siège social"></div>
+            <div class="fg"><label class="flabel">Date de début d'activité</label><input class="finput" type="date" id="ci-debut"></div>
+            <div class="fg"><label class="flabel">Qualité (fonction)</label><input class="finput" id="ci-qualite" placeholder="Ex : Gérant(e), Président(e)"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASSOCIÉS -->
+      <div id="section-associes" style="display:none">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">👥 Associés / Actionnaires</span>
+            <button class="btn btn-primary btn-sm" onclick="addAssocie()">+ Ajouter un associé</button>
+          </div>
+          <div class="card-body">
+            <div style="background:var(--blue-light);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--blue);margin-bottom:18px">
+              ℹ️ Le dirigeant principal est déjà renseigné ci-dessus. Ajoutez ici les autres associés/actionnaires.
+            </div>
+            <div id="associes-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-bottom:40px">
+        <button class="btn btn-green" style="padding:12px 28px;font-size:14px" onclick="saveClientInfos()">✓ Enregistrer toutes mes informations</button>
+      </div>
+    </div>
+
+    <!-- CLIENT DOCS -->
+    <div class="page" id="page-client-docs">
+      <div class="page-title" style="margin-bottom:4px">Mes documents</div>
+      <div class="page-sub" style="margin-bottom:28px">Documents générés par votre cabinet</div>
+      <div class="card">
+        <div class="card-body" style="text-align:center;padding:40px">
+          <div style="font-size:40px;margin-bottom:12px">📄</div>
+          <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:6px">Vos documents seront disponibles ici</div>
+          <div style="font-size:13px;color:var(--text-light)">Votre cabinet prépare vos documents. Vous serez informé(e) dès qu'ils seront prêts.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENT UPLOAD -->
+    <div class="page" id="page-client-upload">
+      <div class="page-title" style="margin-bottom:4px">Envoyer des pièces</div>
+      <div class="page-sub" style="margin-bottom:28px">Transmettez vos justificatifs et documents signés</div>
+      <div id="alert-upload" class="alert" style="display:none"></div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Pièces à fournir</span></div>
+        <div class="card-body">
+          <div id="pieces-list" style="margin-bottom:20px"></div>
+          <div class="upload-zone" onclick="document.getElementById('file-input-client').click()">
+            <div style="font-size:36px;margin-bottom:10px">☁️</div>
+            <div style="font-size:13px;color:var(--text-light)"><strong style="color:var(--blue)">Cliquez pour choisir un fichier</strong> ou glissez-déposez</div>
+            <div style="font-size:11px;color:var(--text-light);margin-top:6px">PDF, JPG, PNG — max 10 MB</div>
+          </div>
+          <input type="file" id="file-input-client" style="display:none" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadClientFile()">
+          <div style="margin-top:16px;font-size:12px;color:var(--text-light)">
+            💡 Si vous avez du mal à utiliser cette interface, envoyez vos documents directement par email à votre cabinet.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL CONFIRMATION SUPPRESSION -->
+<div class="modal-overlay" id="modal-delete">
+  <div class="modal">
+    <div class="modal-title" style="color:var(--terra)">⚠️ Supprimer le dossier</div>
+    <p style="font-size:13px;color:var(--text-light);line-height:1.6">Êtes-vous sûr(e) de vouloir supprimer ce dossier ? Cette action est <strong>irréversible</strong>.</p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('modal-delete')">Annuler</button>
+      <button class="btn btn-danger" onclick="deleteDossier()">Oui, supprimer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://dtkulnksawhnfdyfilzk.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0a3VsbmtzYXdobmZkeWZpbHprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2OTQwNTksImV4cCI6MjA4OTI3MDA1OX0.CMqbpdfUo1Xq9YoBulwqh57-siptlyfzGoziXcZIXnI';
+const {createClient} = supabase;
+const sb = createClient(SB_URL, SB_KEY);
+
+let currentRole = null, allDossiers = [], selectedDocType = null, currentStep = 1;
+let editingDossierId = null, currentClientEmail = null, currentClientDossierId = null;
+
+// ══ INIT ══
+window.addEventListener('load', async () => {
+  const {data:{session}} = await sb.auth.getSession();
+  if (!session) { showView('login'); return; }
+  await loadApp(session.user);
+});
+
+async function loadApp(user) {
+  const {data:profile} = await sb.from('profiles').select('*').eq('id', user.id).single();
+  currentRole = profile?.role || 'client';
+  currentClientEmail = user.email;
+  const initials = ((profile?.prenom?.[0]||'')+(profile?.nom?.[0]||'')).toUpperCase() || user.email[0].toUpperCase();
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-name').textContent = profile ? `${profile.prenom||''} ${profile.nom||''}`.trim() : user.email;
+  document.getElementById('user-role-display').textContent = currentRole==='admin' ? 'Administrateur' : 'Client';
+  document.getElementById('sidebar-role-label').textContent = currentRole==='admin' ? 'Espace Administrateur' : 'Espace Client';
+  buildNav(currentRole);
+  showView('app');
+  if (currentRole==='admin') { showPage('dashboard'); loadDashboard(); loadDossiersData(); loadClientsSelect(); }
+  else { showPage('client-home'); loadClientHome(user.email); loadClientInfosForm(user.email); }
+}
+
+// ══ AUTH ══
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pwd = document.getElementById('login-password').value;
+  const btn = document.getElementById('login-btn');
+  if (!email||!pwd) { showLoginErr('Veuillez remplir tous les champs.'); return; }
+  btn.disabled=true; btn.textContent='Connexion...';
+  document.getElementById('login-error').style.display='none';
+  const {data,error} = await sb.auth.signInWithPassword({email, password:pwd});
+  if (error) { showLoginErr('Email ou mot de passe incorrect.'); btn.disabled=false; btn.textContent='Se connecter'; return; }
+  await loadApp(data.user);
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  currentRole=null; allDossiers=[]; editingDossierId=null;
+  document.getElementById('login-email').value='';
+  document.getElementById('login-password').value='';
+  document.getElementById('login-btn').disabled=false;
+  document.getElementById('login-btn').textContent='Se connecter';
+  document.getElementById('login-error').style.display='none';
+  showView('login');
+}
+
+function showLoginErr(msg) { const e=document.getElementById('login-error'); e.textContent=msg; e.style.display='block'; }
+document.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+// ══ VIEWS ══
+function showView(v) {
+  document.getElementById('view-login').classList.remove('active');
+  document.getElementById('view-app').classList.remove('active');
+  document.getElementById('view-'+v).classList.add('active');
+}
+
+// ══ NAV ══
+function buildNav(role) {
+  const nav = document.getElementById('sidebar-nav');
+  if (role==='admin') {
+    nav.innerHTML = `
+      <span class="nav-section">Principal</span>
+      <button class="nav-btn active" onclick="showPage('dashboard')"><span class="nav-dot"></span>Tableau de bord</button>
+      <button class="nav-btn" onclick="showPage('dossiers');loadDossiersData()"><span class="nav-dot"></span>Dossiers clients</button>
+      <button class="nav-btn" onclick="showPage('nouveau')"><span class="nav-dot"></span>Nouveau dossier</button>
+      <span class="nav-section">Documents</span>
+      <button class="nav-btn" onclick="showPage('generer');loadClientsSelect()"><span class="nav-dot"></span>Générer un document</button>
+      <span class="nav-section">Administration</span>
+      <button class="nav-btn" onclick="showPage('acces');loadAcces()"><span class="nav-dot"></span>Accès clients</button>`;
+  } else {
+    nav.innerHTML = `
+      <button class="nav-btn active" onclick="showPage('client-home')"><span class="nav-dot"></span>Mon dossier</button>
+      <button class="nav-btn" onclick="showPage('client-infos')"><span class="nav-dot"></span>Mes informations</button>
+      <button class="nav-btn" onclick="showPage('client-docs')"><span class="nav-dot"></span>Mes documents</button>
+      <button class="nav-btn" onclick="showPage('client-upload')"><span class="nav-dot"></span>Envoyer des pièces</button>`;
+  }
+}
+
+// ══ PAGES ══
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id)?.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>{ if(b.getAttribute('onclick')?.includes("'"+id+"'")) b.classList.add('active'); });
+  if(id==='nouveau') resetForm();
+}
+
+// ══ DASHBOARD ══
+async function loadDashboard() {
+  document.getElementById('date-display').textContent = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const {data} = await sb.from('dossiers').select('*').order('created_at',{ascending:false});
+  allDossiers = data||[];
+  document.getElementById('s-encours').textContent = allDossiers.filter(d=>d.statut==='en_cours').length;
+  document.getElementById('s-infos').textContent = allDossiers.filter(d=>d.statut==='en_attente_infos').length;
+  document.getElementById('s-signature').textContent = allDossiers.filter(d=>d.statut==='en_attente_signature').length;
+  document.getElementById('s-pieces').textContent = allDossiers.filter(d=>d.statut==='en_attente_pieces').length;
+  document.getElementById('s-termines').textContent = allDossiers.filter(d=>d.statut==='termine').length;
+  renderRecent(allDossiers.slice(0,5));
+}
+
+function renderRecent(list) {
+  const tb = document.getElementById('tb-recent');
+  if (!list.length) { tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:30px">Aucun dossier</td></tr>'; return; }
+  tb.innerHTML = list.map(d=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:10px">
+      <div class="avatar" style="background:var(--blue-light);color:var(--blue)">${(d.prenom?.[0]||'')+(d.nom?.[0]||'')}</div>
+      <div>
+        <div style="font-weight:700">${d.prenom||''} ${d.nom||''}</div>
+        <div style="font-size:11px;color:var(--text-light)">${d.numero||''} · ${d.email||''}</div>
+      </div>
+    </div></td>
+    <td><span class="tag">${d.forme_juridique||'—'}</span></td>
+    <td>${badgeStatut(d.statut)}</td>
+    <td style="font-size:12px;color:var(--text-light)">${new Date(d.created_at).toLocaleDateString('fr-FR')}</td>
+    <td><div style="display:flex;gap:6px">
+      <button class="btn btn-primary btn-sm" onclick="openModifier('${d.id}')">✏️ Modifier</button>
+      <button class="btn btn-secondary btn-sm" onclick="showPage('generer');loadClientsSelect()">📄 Docs</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+// ══ DOSSIERS ══
+async function loadDossiersData() {
+  const {data} = await sb.from('dossiers').select('*').order('created_at',{ascending:false});
+  allDossiers = data||[];
+  renderDossiers(allDossiers);
+  document.getElementById('dossiers-count').textContent = `${allDossiers.length} dossier(s) au total`;
+}
+
+function applyFilter() {
+  const f = document.getElementById('filter-statut').value;
+  const filtered = f ? allDossiers.filter(d=>d.statut===f) : allDossiers;
+  renderDossiers(filtered);
+}
+
+function filterDossiers(q) {
+  const filtered = allDossiers.filter(d=>`${d.nom} ${d.prenom} ${d.email} ${d.denomination}`.toLowerCase().includes(q.toLowerCase()));
+  renderRecent(filtered.slice(0,5));
+}
+
+function renderDossiers(list) {
+  const tb = document.getElementById('tb-dossiers');
+  if (!list.length) { tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:30px">Aucun dossier</td></tr>'; return; }
+  tb.innerHTML = list.map(d=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:10px">
+      <div class="avatar" style="background:var(--blue-light);color:var(--blue)">${(d.prenom?.[0]||'')+(d.nom?.[0]||'')}</div>
+      <div style="font-weight:700">${d.prenom||''} ${d.nom||''}</div>
+    </div></td>
+    <td><span class="tag">${d.forme_juridique||'—'}</span></td>
+    <td><div style="font-size:11px;margin-bottom:3px">${d.progression||0}%</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${d.progression||0}%"></div></div></td>
+    <td>${badgeStatut(d.statut)}</td>
+    <td><div style="display:flex;gap:6px">
+      <button class="btn btn-primary btn-sm" onclick="openModifier('${d.id}')">✏️ Modifier</button>
+      <button class="btn btn-secondary btn-sm" onclick="showPage('generer');loadClientsSelect()">📄 Docs</button>
+      <button class="btn btn-danger btn-sm" onclick="editingDossierId='${d.id}';confirmDelete()">🗑️</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function badgeStatut(s) {
+  const m = {
+    en_cours:'<span class="badge badge-blue"><span class="badge-dot"></span>En cours</span>',
+    en_attente_infos:'<span class="badge badge-orange"><span class="badge-dot"></span>Attente infos</span>',
+    en_attente_signature:'<span class="badge badge-purple"><span class="badge-dot"></span>À signer</span>',
+    en_attente_pieces:'<span class="badge badge-terra"><span class="badge-dot"></span>Attente pièces</span>',
+    termine:'<span class="badge badge-green"><span class="badge-dot"></span>Terminé</span>'
+  };
+  return m[s] || '<span class="badge badge-gray"><span class="badge-dot"></span>Nouveau</span>';
+}
+
+// ══ STEPPER ══
+function goStep(n) {
+  if (n>currentStep && !validateStep(currentStep)) return;
+  for(let i=1;i<=4;i++) {
+    document.getElementById('step'+i).style.display = i===n?'block':'none';
+    const sc=document.getElementById('sc'+i), sl=document.getElementById('sl'+i);
+    if(i<n){sc.className='step-circle done';sc.textContent='✓';sl.className='step-label';}
+    else if(i===n){sc.className='step-circle active';sc.textContent=i;sl.className='step-label active';}
+    else{sc.className='step-circle pending';sc.textContent=i;sl.className='step-label';}
+    if(i<4) document.getElementById('line'+i).className='step-line'+(i<n?' done':'');
+  }
+  currentStep=n; hideAlert('nouveau');
+}
+
+function validateStep(n) {
+  if(n===1){if(!v('f-nom')||!v('f-prenom')||!v('f-email')||!v('f-adresse')){showAlert('nouveau','Veuillez remplir les champs obligatoires (*).','error');return false;}}
+  if(n===2){if(!v('f-forme')||!v('f-denomination')||!v('f-objet')||!v('f-siege')){showAlert('nouveau','Veuillez remplir les champs obligatoires (*).','error');return false;}}
+  return true;
+}
+
+function v(id){return document.getElementById(id)?.value?.trim()||'';}
+
+function resetForm() {
+  ['f-civilite','f-nationalite','f-nom','f-prenom','f-ddn','f-lieu-naiss','f-adresse','f-email','f-tel',
+   'f-forme','f-denomination','f-objet','f-capital','f-siege','f-debut','f-qualite',
+   'f-nom-pere','f-prenom-pere','f-nom-mere','f-prenom-mere','f-notes'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('f-duree').value='99 ans';
+  document.getElementById('f-statut').value='en_cours';
+  document.getElementById('f-progression').value='30';
+  goStep(1);
+}
+
+// ══ SAVE NOUVEAU ══
+async function saveDossier() {
+  const numero = await getNextDossierNum();
+  const {error} = await sb.from('dossiers').insert([{
+    numero,
+    civilite:v('f-civilite'), nom:v('f-nom').toUpperCase(), prenom:v('f-prenom'), email:v('f-email'),
+    telephone:v('f-tel'), date_naissance:v('f-ddn')||null, lieu_naissance:v('f-lieu-naiss'),
+    nationalite:v('f-nationalite'), adresse:v('f-adresse'), forme_juridique:v('f-forme'),
+    denomination:v('f-denomination'), objet_social:v('f-objet'), capital:v('f-capital')||null,
+    siege_social:v('f-siege'), duree:v('f-duree'), date_debut:v('f-debut')||null,
+    qualite:v('f-qualite'), nom_pere:v('f-nom-pere'), prenom_pere:v('f-prenom-pere'),
+    nom_mere:v('f-nom-mere'), prenom_mere:v('f-prenom-mere'),
+    statut:v('f-statut'), progression:parseInt(v('f-progression'))||30, notes:v('f-notes')
+  }]);
+  if(error){showAlert('nouveau','❌ Erreur : '+error.message,'error');return;}
+  showAlert('nouveau',`✅ Dossier ${numero} enregistré avec succès !`,'success');
+  loadDashboard(); loadDossiersData(); loadClientsSelect();
+  setTimeout(()=>showPage('dossiers'),1500);
+}
+
+// ══ MODIFIER ══
+async function openModifier(id) {
+  editingDossierId = id;
+  const {data:d} = await sb.from('dossiers').select('*').eq('id',id).single();
+  if(!d) return;
+  document.getElementById('modifier-sub').textContent = `${d.prenom||''} ${d.nom||''} — ${d.forme_juridique||''}`;
+  const fields = {
+    'm-civilite':d.civilite,'m-nationalite':d.nationalite,'m-nom':d.nom,'m-prenom':d.prenom,
+    'm-ddn':d.date_naissance||'','m-lieu-naiss':d.lieu_naissance,'m-adresse':d.adresse,
+    'm-email':d.email,'m-tel':d.telephone,'m-forme':d.forme_juridique,
+    'm-denomination':d.denomination,'m-objet':d.objet_social,'m-capital':d.capital||'',
+    'm-siege':d.siege_social,'m-duree':d.duree,'m-debut':d.date_debut||'',
+    'm-qualite':d.qualite,'m-nom-pere':d.nom_pere,'m-prenom-pere':d.prenom_pere,
+    'm-nom-mere':d.nom_mere,'m-prenom-mere':d.prenom_mere,
+    'm-statut':d.statut,'m-progression':d.progression||30,'m-notes':d.notes||''
+  };
+  Object.entries(fields).forEach(([id,val])=>{ const el=document.getElementById(id); if(el) el.value=val||''; });
+  showPage('modifier');
+}
+
+async function saveMod() {
+  const {error} = await sb.from('dossiers').update({
+    civilite:v('m-civilite'), nom:v('m-nom').toUpperCase(), prenom:v('m-prenom'), email:v('m-email'),
+    telephone:v('m-tel'), date_naissance:v('m-ddn')||null, lieu_naissance:v('m-lieu-naiss'),
+    nationalite:v('m-nationalite'), adresse:v('m-adresse'), forme_juridique:v('m-forme'),
+    denomination:v('m-denomination'), objet_social:v('m-objet'), capital:v('m-capital')||null,
+    siege_social:v('m-siege'), duree:v('m-duree'), date_debut:v('m-debut')||null,
+    qualite:v('m-qualite'), nom_pere:v('m-nom-pere'), prenom_pere:v('m-prenom-pere'),
+    nom_mere:v('m-nom-mere'), prenom_mere:v('m-prenom-mere'),
+    statut:v('m-statut'), progression:parseInt(v('m-progression'))||0, notes:v('m-notes')
+  }).eq('id',editingDossierId);
+  if(error){showAlert('modifier','❌ Erreur : '+error.message,'error');return;}
+  showAlert('modifier','✅ Modifications enregistrées !','success');
+  loadDashboard(); loadDossiersData();
+}
+
+// ══ SUPPRIMER ══
+function confirmDelete() { document.getElementById('modal-delete').classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+async function deleteDossier() {
+  closeModal('modal-delete');
+  const {error} = await sb.from('dossiers').delete().eq('id',editingDossierId);
+  if(error){alert('Erreur : '+error.message);return;}
+  loadDashboard(); loadDossiersData();
+  showPage('dossiers');
+}
+
+// ══ GÉNÉRER ══
+async function loadClientsSelect() {
+  const {data} = await sb.from('dossiers').select('id,nom,prenom,forme_juridique').order('nom');
+  const sel = document.getElementById('select-client-doc');
+  sel.innerHTML = '<option value="">Sélectionner un client...</option>'+(data||[]).map(d=>`<option value="${d.id}">${d.prenom||''} ${d.nom||''} — ${d.forme_juridique||'?'}</option>`).join('');
+}
+
+function selectDoc(el,type) {
+  document.querySelectorAll('.doc-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected'); selectedDocType=type;
+}
+
+async function markSignature() {
+  const clientId = document.getElementById('select-client-doc').value;
+  if(!clientId){showAlert('generer','Veuillez sélectionner un client.','error');return;}
+  await sb.from('dossiers').update({statut:'en_attente_signature'}).eq('id',clientId);
+  showAlert('generer','✅ Dossier marqué "En attente de signature". Le client sera notifié.','success');
+  loadDashboard(); loadDossiersData();
+}
+
+async function generateDoc() {
+  const clientId = document.getElementById('select-client-doc').value;
+  if(!clientId){showAlert('generer','Veuillez sélectionner un client.','error');return;}
+  if(!selectedDocType){showAlert('generer','Veuillez sélectionner un type de document.','error');return;}
+  const {data:d} = await sb.from('dossiers').select('*').eq('id',clientId).single();
+  if(!d){showAlert('generer','Dossier introuvable.','error');return;}
+  openDoc(d,selectedDocType);
+  showAlert('generer','✅ Document généré ! Utilisez Imprimer / PDF dans la nouvelle fenêtre.','success');
+}
+
+function openDoc(d,type) {
+  const date = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  const ddn = d.date_naissance ? new Date(d.date_naissance).toLocaleDateString('fr-FR') : '___';
+  
+  // Récupérer les associés
+  let assocData = [];
+  try { if(d.notes) assocData = JSON.parse(d.notes); } catch(e) {}
+  
+  // Ligne dirigeant principal pour liste souscripteurs
+  const dirigeant = `${d.prenom||''} ${d.nom||''}`;
+  
+  // Générer la liste des associés pour les statuts
+  const listeAssocies = assocData.length > 0 ? assocData.map((a,i) => 
+    `${i+2}. ${a.civilite||''} ${a.prenom||''} ${a.nom||''}, demeurant ${a.adresse||'___'}, ${a.matrimonial||''}`
+  ).join('\n') : '';
+
+  // Liste souscripteurs complète
+  const lignesSouscripteurs = [
+    `${d.prenom||''} ${d.nom||''}`.padEnd(25) + `| ${(d.adresse||'___').substring(0,28).padEnd(28)} | ${(''+( assocData.length ? Math.round(parseInt(d.capital||0) / (assocData.length+1) / 10) : 50)).padEnd(8)} | ${(d.capital ? Math.round(parseInt(d.capital)/(assocData.length+1)) : '___')}`,
+    ...assocData.map(a => 
+      `${(a.prenom||'')+' '+(a.nom||'')}`.padEnd(25) + `| ${(a.adresse||'___').substring(0,28).padEnd(28)} | ${(a.parts||'___').toString().padEnd(8)} | ${a.montant||'___'}`
+    )
+  ].join('\n');
+
+  let content='';
+
+  if(type==='non_condamnation') content=`DÉCLARATION DE NON-CONDAMNATION ET DE FILIATION\n\nJe soussigné(e), ${d.civilite||''} ${d.prenom||'___'} ${d.nom||'___'},\nné(e) le ${ddn} à ${d.lieu_naissance||'___'},\nde nationalité ${d.nationalite||'___'},\ndemeurant ${d.adresse||'___'},\n\nAgissant en qualité de ${d.qualite||'___'} de la société ${d.denomination||'___'} (${d.forme_juridique||'___'}),\n\nDéclare sur l'honneur :\n\n1. Ne pas avoir fait l'objet d'une condamnation pénale, ni d'une sanction civile ou administrative de nature à m'interdire de gérer, d'administrer ou de diriger une personne morale.\n\n2. Ne pas être sous le coup d'une interdiction de gérer.\n\n3. Être en mesure d'exercer des fonctions de direction ou d'administration.\n\nFiliation :\n- Père : ${d.prenom_pere||'___'} ${d.nom_pere||'___'}\n- Mère (nom de naissance) : ${d.prenom_mere||'___'} ${d.nom_mere||'___'}\n\n\nFait à Saint-Martin, le ${date}\n\nSignature :\n\n\n___________________________\n${d.civilite||''} ${d.prenom||''} ${d.nom||''}`;
+
+  else if(type==='statuts_eurl') content=`${d.denomination||'___'}\nSociété à responsabilité limitée unipersonnelle\nau capital de ${d.capital||'___'} euros\nSiège social : ${d.siege_social||'___'}\n\n\n\nSTATUTS CONSTITUTIFS\n\n\n\nLa soussignée :\n${d.civilite||''} ${d.prenom||'___'} ${d.nom||'___'},\ndemeurant ${d.adresse||'___'}\nné(e) le ${ddn} à ${d.lieu_naissance||'___'}\nde nationalité ${d.nationalite||'___'}\n\nA arrêté ainsi qu'il suit les statuts d'une Société à responsabilité limitée unipersonnelle.\n\n\nTITRE 1 – FORME – OBJET – DÉNOMINATION – SIÈGE – DURÉE\n\nArticle 1 – Forme juridique\nIl est formé par l'associé unique une société à responsabilité limitée régie par les dispositions légales et réglementaires applicables et par les présents statuts.\n\nArticle 2 – Objet social\nLa Société a pour objet :\n${d.objet_social||'___'}\n\nArticle 3 – Dénomination sociale\nLa dénomination de la Société est : ${d.denomination||'___'}\n\nArticle 4 – Siège social\nLe siège social est fixé au : ${d.siege_social||'___'}\nIl pourra être transféré en tout autre endroit par simple décision du gérant.\n\nArticle 5 – Durée\nLa durée de la Société est fixée à ${d.duree||'99 ans'} à compter de la date d'immatriculation au Registre du Commerce et des Sociétés.\n\n\nTITRE 2 – CAPITAL SOCIAL\n\nArticle 6 – Apports\nL'associé unique apporte à la Société la somme de ${d.capital||'___'} euros.\n\nArticle 7 – Capital social\nLe capital social est fixé à la somme de ${d.capital||'___'} euros.\n\n\nTITRE 3 – GÉRANCE\n\nArticle 8 – Gérance\nLa Société est gérée par : ${d.civilite||''} ${d.prenom||'___'} ${d.nom||'___'},\ndemeurant ${d.adresse||'___'}.\n\nLe gérant est investi des pouvoirs les plus étendus pour agir en toutes circonstances au nom de la Société.\n\n\nTITRE 4 – EXERCICE SOCIAL\n\nArticle 9 – Exercice social\nL'exercice social commence le 1er janvier et se termine le 31 décembre de chaque année.\n\n\nFait à Saint-Martin, le ${date}\n\n\n${d.civilite||''} ${d.prenom||''} ${d.nom||''}\nAssocié(e) unique et Gérant(e)\n\nSignature : ___________________________`;
+
+  else if(type==='statuts_sarl') content=`${d.denomination||'___'}\nSociété à responsabilité limitée\nau capital de ${d.capital||'___'} euros\nSiège social : ${d.siege_social||'___'}\n\n\nSTATUTS\n\n\nEntre les soussignés :\n\n1. ${d.civilite||''} ${d.prenom||'___'} ${d.nom||'___'}, demeurant ${d.adresse||'___'}, ${d.matrimonial||''}\n${listeAssocies}\n\nIl est établi les statuts d'une société à responsabilité limitée.\n\nArticle 1 – Forme : Société à responsabilité limitée (SARL)\nArticle 2 – Dénomination : ${d.denomination||'___'}\nArticle 3 – Objet : ${d.objet_social||'___'}\nArticle 4 – Siège : ${d.siege_social||'___'}\nArticle 5 – Durée : ${d.duree||'99 ans'}\nArticle 6 – Capital : ${d.capital||'___'} euros\nArticle 7 – Gérant(e) : ${d.civilite||''} ${d.prenom||''} ${d.nom||''}\n\n\nFait à Saint-Martin, le ${date}\n\n${d.civilite||''} ${d.prenom||''} ${d.nom||''}\n${assocData.map(a=>`\n${a.civilite||''} ${a.prenom||''} ${a.nom||''}`).join('')}`;
+
+  else if(type==='statuts_sas') content=`${d.denomination||'___'}\nSociété par actions simplifiée\nau capital de ${d.capital||'___'} euros\nSiège social : ${d.siege_social||'___'}\n\n\nSTATUTS\n\n\nEntre les soussignés :\n\n1. ${d.civilite||''} ${d.prenom||'___'} ${d.nom||'___'}, demeurant ${d.adresse||'___'}\n${listeAssocies}\n\nArticle 1 – Forme : Société par actions simplifiée (SAS)\nArticle 2 – Dénomination : ${d.denomination||'___'}\nArticle 3 – Objet : ${d.objet_social||'___'}\nArticle 4 – Siège : ${d.siege_social||'___'}\nArticle 5 – Durée : ${d.duree||'99 ans'}\nArticle 6 – Capital : ${d.capital||'___'} euros\nArticle 7 – Président(e) : ${d.civilite||''} ${d.prenom||''} ${d.nom||''}\n\n\nFait à Saint-Martin, le ${date}\n\n${d.civilite||''} ${d.prenom||''} ${d.nom||''}\n${assocData.map(a=>`\n${a.civilite||''} ${a.prenom||''} ${a.nom||''}`).join('')}`;
+
+  else if(type==='statuts_sasu') content=`${d.denomination||'___'}\nSociété par actions simplifiée unipersonnelle\nau capital de ${d.capital||'___'} euros\nSiège social : ${d.siege_social||'___'}\n\n\nSTATUTS\n\n\nL'associé unique :\n${d.civilite||''} ${d.prenom||'___'} ${d.nom||'___'}\ndemeurant ${d.adresse||'___'}\n\nArticle 1 – Forme : SASU\nArticle 2 – Dénomination : ${d.denomination||'___'}\nArticle 3 – Objet : ${d.objet_social||'___'}\nArticle 4 – Siège : ${d.siege_social||'___'}\nArticle 5 – Durée : ${d.duree||'99 ans'}\nArticle 6 – Capital : ${d.capital||'___'} euros\nArticle 7 – Président : ${d.civilite||''} ${d.prenom||''} ${d.nom||''}\n\n\nFait à Saint-Martin, le ${date}\n\n${d.civilite||''} ${d.prenom||''} ${d.nom||''}\nAssocié(e) unique et Président(e)`;
+
+  else if(type==='mandat_special') content=`MANDAT SPÉCIAL\n\nJe soussigné(e), ${d.civilite||''} ${d.prenom||'___'} ${d.nom||'___'},\nné(e) le ${ddn} à ${d.lieu_naissance||'___'},\ndemeurant ${d.adresse||'___'},\n\nDonne par la présente procuration et mandat spécial à :\n\nM./Mme ___________________________\ndemeurant ___________________________\n\nÀ l'effet de me représenter et d'agir en mon nom pour :\n___________________________\n___________________________\n\nCe mandat prend effet à compter du ${date}.\n\nFait à Saint-Martin, le ${date}\n\nLe mandant :\n\n\n___________________________\n${d.civilite||''} ${d.prenom||''} ${d.nom||''}`;
+
+  else if(type==='mandat_general') content=`MANDAT GÉNÉRAL\n\nJe soussigné(e), ${d.civilite||''} ${d.prenom||'___'} ${d.nom||'___'},\nné(e) le ${ddn} à ${d.lieu_naissance||'___'},\ndemeurant ${d.adresse||'___'},\n\nDonne par la présente procuration et mandat général à :\n\nM./Mme ___________________________\ndemeurant ___________________________\n\nPour me représenter généralement dans toutes mes affaires courantes, signer tous documents et actes nécessaires à la gestion de mes intérêts.\n\nCe mandat est valable jusqu'au ___________________________.\n\nFait à Saint-Martin, le ${date}\n\nLe mandant :\n\n\n___________________________\n${d.civilite||''} ${d.prenom||''} ${d.nom||''}`;
+
+  else if(type==='attestation_hebergement') content=`ATTESTATION D'HÉBERGEMENT\n\nJe soussigné(e), ___________________________,\nné(e) le ___________ à ___________________________,\ndemeurant ___________________________,\n\nAtteste sur l'honneur héberger à mon domicile :\n\n${d.civilite||''} ${d.prenom||'___'} ${d.nom||'___'},\nné(e) le ${ddn} à ${d.lieu_naissance||'___'},\nde nationalité ${d.nationalite||'___'}.\n\nCette attestation est établie pour servir et valoir ce que de droit, notamment pour la domiciliation de la société ${d.denomination||'___'}.\n\nFait à Saint-Martin, le ${date}\n\nSignature de l'hébergeant :\n\n\n___________________________\n\nPièce d'identité jointe : ☐ CNI  ☐ Passeport`;
+
+  else if(type==='convention_logement') content=`CONVENTION DE MISE À DISPOSITION DE LOGEMENT\n\nENTRE LES SOUSSIGNÉS :\n\nM./Mme ___________________________, dit(e) « le Propriétaire »,\ndemeurant ___________________________,\n\nET :\n\nLa société ${d.denomination||'___'} (${d.forme_juridique||'___'}),\nreprésentée par ${d.civilite||''} ${d.prenom||''} ${d.nom||''},\nci-après dénommée « la Société »,\n\nIL A ÉTÉ CONVENU CE QUI SUIT :\n\nArticle 1 – Objet\nLe Propriétaire met à disposition de la Société, à titre gratuit, son domicile situé au :\n${d.siege_social||'___'}\npour y fixer le siège social.\n\nArticle 2 – Durée\nLa présente convention est conclue pour une durée de ___ à compter du ${date}.\n\nArticle 3 – Conditions\nLa mise à disposition est consentie à titre gratuit, sans contrepartie financière.\n\nArticle 4 – Résiliation\nChacune des parties peut mettre fin à la présente convention sous réserve d'un préavis de ___ mois.\n\nFait à Saint-Martin, le ${date}, en deux exemplaires originaux.\n\nLe Propriétaire :                    Le/La Gérant(e) :\n\n\n___________________________        ___________________________\n                                   ${d.civilite||''} ${d.prenom||''} ${d.nom||''}`;
+
+  else if(type==='liste_souscripteurs') content=`LISTE DES SOUSCRIPTEURS\n\nSociété : ${d.denomination||'___'}\nForme : ${d.forme_juridique||'___'}\nCapital total : ${d.capital||'___'} euros\nDate de constitution : ${date}\nNuméro de dossier : ${d.numero||'—'}\n\n${'─'.repeat(85)}\n\nNom et prénom             | Adresse                         | Parts    | Montant (€)\n${'─'.repeat(85)}\n${lignesSouscripteurs}\n${'─'.repeat(85)}\nTOTAL                     |                                 |          | ${d.capital||'___'} €\n\nFait à Saint-Martin, le ${date}\n\nSignatures des soussignés :\n\n${d.prenom||''} ${d.nom||''}\n___________________________\n${assocData.map(a=>`\n${a.prenom||''} ${a.nom||''}\n___________________________`).join('')}`;
+
+  else if(type==='pv_nomination') content=`PROCÈS-VERBAL DE L'ASSEMBLÉE GÉNÉRALE CONSTITUTIVE\n\nSociété : ${d.denomination||'___'} — ${d.forme_juridique||'___'}\nNuméro de dossier : ${d.numero||'—'}\nDate : ${date}\nLieu : ${d.siege_social||'___'}\n\nPRÉSENTS :\n- ${d.civilite||''} ${d.prenom||''} ${d.nom||''}, associé(e) principal(e)\n${assocData.map(a=>`- ${a.civilite||''} ${a.prenom||''} ${a.nom||''}`).join('\n')}\n\nL'assemblée est présidée par ${d.civilite||''} ${d.prenom||''} ${d.nom||''}.\n\nORDRE DU JOUR :\n1. Constatation de la constitution de la société\n2. Nomination du/de la ${d.qualite||'Gérant(e)'}\n3. Pouvoirs\n\nRÉSOLUTION 1\nL'assemblée constate que la société ${d.denomination||'___'} est régulièrement constituée.\nAdoptée à l'unanimité.\n\nRÉSOLUTION 2\nL'assemblée nomme en qualité de ${d.qualite||'Gérant(e)'} :\n${d.civilite||''} ${d.prenom||''} ${d.nom||''}\npour une durée indéterminée.\nAdoptée à l'unanimité.\n\nRÉSOLUTION 3\nTous pouvoirs sont donnés au porteur d'une copie des présents statuts.\nAdoptée à l'unanimité.\n\nL'ordre du jour étant épuisé, la séance est levée.\n\nFait à Saint-Martin, le ${date}\n\nLe/La Président(e) de séance :\n\n___________________________\n${d.civilite||''} ${d.prenom||''} ${d.nom||''}`;
+
+  else if(type==='creation_ei') content=`DÉCLARATION DE CRÉATION D'ENTREPRISE INDIVIDUELLE\n\nJe soussigné(e), ${d.civilite||''} ${d.prenom||'___'} ${d.nom||'___'},\nné(e) le ${ddn} à ${d.lieu_naissance||'___'},\nde nationalité ${d.nationalite||'___'},\ndemeurant ${d.adresse||'___'},\n\nDéclare exercer à titre individuel l'activité suivante :\n\nActivité : ${d.objet_social||'___'}\nDénomination commerciale : ${d.denomination||'___'}\nAdresse d'exercice : ${d.siege_social||'___'}\nDate de début d'activité : ${d.date_debut ? new Date(d.date_debut).toLocaleDateString('fr-FR') : '___'}\n\nFait à Saint-Martin, le ${date}\n\nSignature :\n\n\n___________________________\n${d.civilite||''} ${d.prenom||''} ${d.nom||''}`;
+
+  else if(type==='association') content=`STATUTS DE L'ASSOCIATION\n« ${d.denomination||'___'} »\n\nFondateurs :\n- ${d.civilite||''} ${d.prenom||''} ${d.nom||''}, demeurant ${d.adresse||'___'}\n${assocData.map(a=>`- ${a.civilite||''} ${a.prenom||''} ${a.nom||''}, demeurant ${a.adresse||'___'}`).join('\n')}\n\nARTICLE 1 – CONSTITUTION ET DÉNOMINATION\nIl est fondé entre les adhérents aux présents statuts une association régie par la loi du 1er juillet 1901, ayant pour titre : ${d.denomination||'___'}.\n\nARTICLE 2 – OBJET\n${d.objet_social||'___'}\n\nARTICLE 3 – SIÈGE SOCIAL\nLe siège social est fixé au : ${d.siege_social||'___'}\n\nARTICLE 4 – DURÉE\nL'association est créée pour une durée illimitée.\n\nARTICLE 5 – MEMBRES\nL'association se compose de membres actifs, membres bienfaiteurs et membres d'honneur.\n\nARTICLE 6 – ADMINISTRATION\nL'association est dirigée par un bureau composé d'un Président, d'un Secrétaire et d'un Trésorier.\n\nARTICLE 7 – DISSOLUTION\nLa dissolution est prononcée par l'assemblée générale extraordinaire.\n\n\nFait à Saint-Martin, le ${date}\n\nLe/La Président(e) :\n\n___________________________\n${d.civilite||''} ${d.prenom||''} ${d.nom||''}`;
+
+  else content=`Document "${type}"\nClient : ${d.prenom||''} ${d.nom||''}\nNuméro : ${d.numero||'—'}\nDate : ${date}\n\n— Modèle à compléter —`;
+
+  const win=window.open('','_blank');
+  win.document.write(`<html><head><title>${type} — ${d.prenom||''} ${d.nom||''}</title>
+  <style>body{font-family:'Times New Roman',serif;font-size:14px;line-height:1.9;padding:70px;max-width:820px;margin:0 auto;color:#000}
+  pre{white-space:pre-wrap;font-family:inherit;font-size:14px}
+  .bar{position:fixed;top:0;left:0;right:0;background:#1A2E4A;padding:10px 24px;display:flex;gap:10px;z-index:99}
+  button{padding:8px 18px;cursor:pointer;border:none;border-radius:8px;font-size:13px;font-weight:600}
+  .p{background:white;color:#1A2E4A}.g{background:#52B788;color:white}
+  @media print{.bar{display:none}}</style></head>
+  <body><div class="bar">
+    <button class="p" onclick="window.print()">🖨️ Imprimer / Enregistrer PDF</button>
+    <button class="g" onclick="navigator.clipboard.writeText(document.querySelector('pre').textContent).then(()=>alert('Texte copié !'))">📋 Copier le texte</button>
+  </div>
+  <br><br><br><pre>${content}</pre></body></html>`);
+  win.document.close();
+}
+
+
+// ══ ACCÈS ══
+async function loadAcces() {
+  const {data} = await sb.from('dossiers').select('nom,prenom,email,forme_juridique,statut').order('nom');
+  document.getElementById('tb-acces').innerHTML = (data||[]).length ? data.map(d=>`
+    <tr>
+      <td style="font-weight:700">${d.prenom||''} ${d.nom||''}</td>
+      <td style="font-size:12px;color:var(--text-light)">${d.email||'—'}</td>
+      <td><span class="tag">${d.forme_juridique||'—'}</span></td>
+      <td>${badgeStatut(d.statut)}</td>
+      <td><button class="btn btn-primary btn-sm" onclick="openModifier_email('${d.email}')">✏️ Dossier</button></td>
+    </tr>`).join('')
+    : '<tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:30px">Aucun client</td></tr>';
+}
+
+async function openModifier_email(email) {
+  const {data} = await sb.from('dossiers').select('id').eq('email',email).single();
+  if(data) openModifier(data.id);
+}
+
+// ══ NUMÉROTATION DOSSIERS ══
+async function getNextDossierNum() {
+  const {data} = await sb.from('dossiers').select('numero').order('created_at', {ascending:false}).limit(1);
+  if (!data || !data.length || !data[0].numero) return 'MCD-2026-001';
+  const last = data[0].numero;
+  const num = parseInt(last.split('-').pop()) + 1;
+  return `MCD-2026-${String(num).padStart(3,'0')}`;
+}
+
+// ══ MOT DE PASSE OUBLIÉ ══
+async function forgotPassword() {
+  const email = document.getElementById('login-email').value.trim();
+  if (!email) { showLoginErr('Entrez votre email d\'abord.'); return; }
+  const {error} = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + window.location.pathname
+  });
+  if (error) { showLoginErr('Erreur : ' + error.message); return; }
+  showLoginErr('✅ Email de réinitialisation envoyé ! Vérifiez votre boîte mail.');
+  document.getElementById('login-error').style.background = 'var(--green-light)';
+  document.getElementById('login-error').style.color = '#2A8A5E';
+}
+
+// ══ CLIENT HOME ══
+let associes = [];
+let associeCount = 0;
+
+function toggleAssocies() {
+  const forme = document.getElementById('ci-forme').value;
+  const formesSansAssocies = ['EURL','SASU','EI'];
+  const section = document.getElementById('section-associes');
+  section.style.display = formesSansAssocies.includes(forme) ? 'none' : 'block';
+}
+
+function addAssocie() {
+  associeCount++;
+  const id = associeCount;
+  const forme = document.getElementById('ci-forme').value;
+  const maxParts = forme === 'SARL' ? 100 : 999;
+
+  const div = document.createElement('div');
+  div.id = `associe-${id}`;
+  div.style.cssText = 'background:var(--bg);border-radius:12px;padding:20px;margin-bottom:14px;border:1px solid var(--border)';
+  div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-weight:700;font-size:13px;color:var(--navy)">Associé ${id}</div>
+      <button class="btn btn-danger btn-sm" onclick="removeAssocie(${id})">✕ Supprimer</button>
+    </div>
+    <div class="form-grid">
+      <div class="fg"><label class="flabel">Civilité</label>
+        <select class="finput fselect" id="a${id}-civilite"><option value="">—</option><option>M.</option><option>Mme</option></select>
+      </div>
+      <div class="fg"><label class="flabel">Situation matrimoniale</label>
+        <select class="finput fselect" id="a${id}-matrimonial">
+          <option value="">—</option><option>Célibataire</option><option>Marié(e)</option>
+          <option>Pacsé(e)</option><option>Divorcé(e)</option><option>Veuf/Veuve</option>
+        </select>
+      </div>
+      <div class="fg"><label class="flabel">Nom *</label><input class="finput" id="a${id}-nom" placeholder="En majuscules"></div>
+      <div class="fg"><label class="flabel">Prénom *</label><input class="finput" id="a${id}-prenom"></div>
+      <div class="fg"><label class="flabel">Date de naissance</label><input class="finput" type="date" id="a${id}-ddn"></div>
+      <div class="fg"><label class="flabel">Lieu de naissance</label><input class="finput" id="a${id}-lieu" placeholder="Ville, Pays"></div>
+      <div class="fg"><label class="flabel">Nationalité</label><input class="finput" id="a${id}-nationalite"></div>
+      <div class="fg"><label class="flabel">Téléphone</label><input class="finput" id="a${id}-tel"></div>
+      <div class="fg"><label class="flabel">Email</label><input class="finput" type="email" id="a${id}-email" placeholder="email@exemple.com"></div>
+      <div class="fg"><label class="flabel">Régime matrimonial</label>
+        <select class="finput fselect" id="a${id}-regime">
+          <option value="">—</option>
+          <option>Communauté légale réduite aux acquêts</option>
+          <option>Séparation de biens</option>
+          <option>Communauté universelle</option>
+          <option>Participation aux acquêts</option>
+          <option>Sans objet</option>
+        </select>
+      </div>
+      <div class="fg full"><label class="flabel">Adresse</label><input class="finput" id="a${id}-adresse" placeholder="Adresse complète"></div>
+      <div class="fg"><label class="flabel">Nombre de parts</label><input class="finput" type="number" id="a${id}-parts" placeholder="Ex : 50" min="1" max="${maxParts}"></div>
+      <div class="fg"><label class="flabel">Montant apporté (€)</label><input class="finput" type="number" id="a${id}-montant" placeholder="Ex : 500"></div>
+    </div>`;
+  document.getElementById('associes-list').appendChild(div);
+  associes.push(id);
+}
+
+function removeAssocie(id) {
+  document.getElementById(`associe-${id}`)?.remove();
+  associes = associes.filter(a => a !== id);
+}
+
+function getAssociesData() {
+  return associes.map(id => ({
+    civilite: document.getElementById(`a${id}-civilite`)?.value || '',
+    matrimonial: document.getElementById(`a${id}-matrimonial`)?.value || '',
+    regime: document.getElementById(`a${id}-regime`)?.value || '',
+    nom: document.getElementById(`a${id}-nom`)?.value?.trim().toUpperCase() || '',
+    prenom: document.getElementById(`a${id}-prenom`)?.value?.trim() || '',
+    date_naissance: document.getElementById(`a${id}-ddn`)?.value || '',
+    lieu_naissance: document.getElementById(`a${id}-lieu`)?.value?.trim() || '',
+    nationalite: document.getElementById(`a${id}-nationalite`)?.value?.trim() || '',
+    telephone: document.getElementById(`a${id}-tel`)?.value?.trim() || '',
+    email: document.getElementById(`a${id}-email`)?.value?.trim() || '',
+    adresse: document.getElementById(`a${id}-adresse`)?.value?.trim() || '',
+    parts: document.getElementById(`a${id}-parts`)?.value || '',
+    montant: document.getElementById(`a${id}-montant`)?.value || ''
+  })).filter(a => a.nom || a.prenom);
+}
+async function loadClientHome(email) {
+  const {data:d} = await sb.from('dossiers').select('*').eq('email',email).single();
+  if(!d) { document.getElementById('c-recap').innerHTML='<p style="color:var(--text-light);font-size:13px">Aucun dossier trouvé. Contactez votre cabinet.</p>'; return; }
+  currentClientDossierId = d.id;
+
+  document.getElementById('client-bonjour').textContent = `Bonjour, ${d.prenom||''} 👋`;
+  document.getElementById('client-sub').textContent = `Dossier ${d.forme_juridique||''} — ${d.denomination||''}`;
+  document.getElementById('c-pct').textContent = (d.progression||30)+'%';
+  document.getElementById('c-bar').style.width = (d.progression||30)+'%';
+
+  const statutTxt = {
+    en_cours:'🔵 En cours de traitement',
+    en_attente_infos:'🟠 En attente de vos informations',
+    en_attente_signature:'🟣 Document en attente de signature',
+    en_attente_pieces:'🔴 En attente de pièces justificatives',
+    termine:'✅ Dossier complet !'
+  };
+  document.getElementById('c-statut-txt').textContent = statutTxt[d.statut] || 'En cours';
+
+  // Bannière signature
+  document.getElementById('signature-banner').style.display = d.statut==='en_attente_signature' ? 'block' : 'none';
+
+  // Timeline
+  const isTermine = d.statut==='termine';
+  const isSign = d.statut==='en_attente_signature';
+  document.getElementById('c-timeline').innerHTML = `
+    <div class="tl-item"><div class="tl-left"><div class="tl-dot done"></div><div class="tl-line done"></div></div><div><div class="tl-title">✅ Dossier ouvert</div><div class="tl-date">${new Date(d.created_at).toLocaleDateString('fr-FR')}</div></div></div>
+    <div class="tl-item"><div class="tl-left"><div class="tl-dot done"></div><div class="tl-line ${isSign||isTermine?'done':'pending'}"></div></div><div><div class="tl-title">✅ Informations reçues</div><div class="tl-date">Confirmé</div></div></div>
+    <div class="tl-item"><div class="tl-left"><div class="tl-dot ${isSign?'active':isTermine?'done':'pending'}"></div><div class="tl-line ${isTermine?'done':'pending'}"></div></div><div><div class="tl-title">${isSign?'✍️ En attente de votre signature':isTermine?'✅ Documents générés':'⏳ Documents en préparation'}</div><div class="tl-date">${isSign?'Action requise':'En cours'}</div></div></div>
+    <div class="tl-item"><div class="tl-left"><div class="tl-dot ${isTermine?'done':'pending'}"></div></div><div><div class="tl-title" style="${isTermine?'':'color:var(--text-light)'}">${isTermine?'✅ Dossier complet':'Documents disponibles'}</div><div class="tl-date">${isTermine?'Terminé':'Prochainement'}</div></div></div>`;
+
+  document.getElementById('c-recap').innerHTML = `
+    <div class="info-row"><span class="info-key">Forme</span><span class="info-val">${d.forme_juridique||'—'}</span></div>
+    <div class="info-row"><span class="info-key">Dénomination</span><span class="info-val">${d.denomination||'—'}</span></div>
+    <div class="info-row"><span class="info-key">Siège social</span><span class="info-val">${d.siege_social||'—'}</span></div>
+    <div class="info-row"><span class="info-key">Capital</span><span class="info-val">${d.capital?d.capital+' €':'—'}</span></div>
+    <div class="info-row"><span class="info-key">Statut</span><span class="info-val">${badgeStatut(d.statut)}</span></div>
+    <div class="divider"></div>
+    <button class="btn btn-green btn-block" onclick="showPage('client-upload')">📤 Envoyer des pièces</button>`;
+
+  // Pièces
+  document.getElementById('pieces-list').innerHTML = `
+    <div class="piece-item pending"><div><div class="piece-name">📋 Pièce d'identité (recto/verso)</div><div class="piece-date">À envoyer</div></div><span class="badge badge-gray">En attente</span></div>
+    <div class="piece-item pending"><div><div class="piece-name">🏠 Justificatif de domicile</div><div class="piece-date">À envoyer</div></div><span class="badge badge-gray">En attente</span></div>
+    ${d.statut==='en_attente_signature'?'<div class="piece-item pending" style="border-color:var(--purple);background:var(--purple-light)"><div><div class="piece-name">✍️ Document signé</div><div class="piece-date">Merci d\'imprimer, signer et renvoyer</div></div><span class="badge badge-purple">Requis</span></div>':''}`;
+}
+
+// ══ CLIENT INFOS ══
+async function loadClientInfosForm(email) {
+  const {data:d} = await sb.from('dossiers').select('*').eq('email',email).single();
+  if(!d) return;
+  const fields = {
+    'ci-civilite':d.civilite,'ci-nationalite':d.nationalite,
+    'ci-nom':d.nom,'ci-prenom':d.prenom,
+    'ci-ddn':d.date_naissance||'','ci-lieu-naiss':d.lieu_naissance,
+    'ci-adresse':d.adresse,'ci-tel':d.telephone,
+    'ci-nom-pere':d.nom_pere,'ci-prenom-pere':d.prenom_pere,
+    'ci-nom-mere':d.nom_mere,'ci-prenom-mere':d.prenom_mere,
+    'ci-forme':d.forme_juridique,'ci-denomination':d.denomination,
+    'ci-objet':d.objet_social,'ci-capital':d.capital||'',
+    'ci-siege':d.siege_social,'ci-duree':d.duree||'99 ans',
+    'ci-debut':d.date_debut||'','ci-qualite':d.qualite
+  };
+  Object.entries(fields).forEach(([id,val])=>{
+    const el=document.getElementById(id); if(el) el.value=val||'';
+  });
+  toggleAssocies();
+}
+
+async function saveClientInfos() {
+  const associesData = getAssociesData();
+  const {error} = await sb.from('dossiers').update({
+    civilite: v('ci-civilite'),
+    nom: v('ci-nom').toUpperCase(),
+    prenom: v('ci-prenom'),
+    date_naissance: v('ci-ddn') || null,
+    lieu_naissance: v('ci-lieu-naiss'),
+    nationalite: v('ci-nationalite'),
+    adresse: v('ci-adresse'),
+    telephone: v('ci-tel'),
+    nom_pere: v('ci-nom-pere'),
+    prenom_pere: v('ci-prenom-pere'),
+    nom_mere: v('ci-nom-mere'),
+    prenom_mere: v('ci-prenom-mere'),
+    forme_juridique: v('ci-forme'),
+    denomination: v('ci-denomination'),
+    objet_social: v('ci-objet'),
+    capital: v('ci-capital') || null,
+    siege_social: v('ci-siege'),
+    duree: v('ci-duree'),
+    date_debut: v('ci-debut') || null,
+    qualite: v('ci-qualite'),
+    notes: associesData.length ? JSON.stringify(associesData) : null,
+    statut: 'en_cours',
+    progression: 60
+  }).eq('email', currentClientEmail);
+  if(error){showAlert('client-infos','❌ Erreur : '+error.message,'error');return;}
+  showAlert('client-infos','✅ Toutes vos informations ont été enregistrées ! Votre cabinet en sera notifié.','success');
+  loadClientHome(currentClientEmail);
+}
+
+// ══ UPLOAD CLIENT ══
+async function uploadClientFile() {
+  const file = document.getElementById('file-input-client').files[0];
+  if(!file) return;
+  showAlert('upload','⏳ Envoi en cours...','success');
+  const path = `${currentClientEmail}/${Date.now()}_${file.name}`;
+  const {error} = await sb.storage.from('pieces-jointes').upload(path, file);
+  if(error){showAlert('upload','❌ Erreur upload. Créez d\'abord le bucket "pieces-jointes" dans Supabase Storage.','error');return;}
+  showAlert('upload','✅ Fichier envoyé avec succès !','success');
+}
+
+// ══ ALERTS ══
+function showAlert(id,msg,type) {
+  const el=document.getElementById('alert-'+id);
+  if(!el) return;
+  el.textContent=msg; el.className='alert alert-'+type; el.style.display='block';
+  setTimeout(()=>el.style.display='none',5000);
+}
+function hideAlert(id){const el=document.getElementById('alert-'+id);if(el)el.style.display='none';}
+</script>
+</body>
+</html>
