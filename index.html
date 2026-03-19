@@ -635,7 +635,7 @@ textarea.finput{resize:vertical;min-height:80px;}
         <div class="card-header"><span class="card-title">🏢 Informations de la société</span></div>
         <div class="card-body">
           <div class="form-grid">
-            <div class="fg"><label class="flabel">Forme juridique</label>
+            <div class="fg"><label class="flabel">Forme juridique *</label>
               <select class="finput fselect" id="ci-forme" onchange="toggleAssocies()">
                 <option value="">Choisir...</option>
                 <option>SARL</option><option>EURL</option><option>SAS</option>
@@ -643,13 +643,68 @@ textarea.finput{resize:vertical;min-height:80px;}
                 <option>Association Loi 1901</option>
               </select>
             </div>
-            <div class="fg"><label class="flabel">Dénomination sociale</label><input class="finput" id="ci-denomination" placeholder="Nom de la société"></div>
-            <div class="fg full"><label class="flabel">Objet social</label><textarea class="finput" id="ci-objet" placeholder="Décrire l'activité principale de la société..."></textarea></div>
-            <div class="fg"><label class="flabel">Capital social (€)</label><input class="finput" type="number" id="ci-capital" placeholder="Ex : 500"></div>
+            <div class="fg"><label class="flabel">Dénomination sociale *</label><input class="finput" id="ci-denomination" placeholder="Nom de la société"></div>
+            <div class="fg"><label class="flabel">Sigle</label><input class="finput" id="ci-sigle" placeholder="Ex : MCD (optionnel)"></div>
+            <div class="fg"><label class="flabel">Qualité (fonction) *</label><input class="finput" id="ci-qualite" placeholder="Ex : Gérant(e), Président(e)"></div>
+            <div class="fg full"><label class="flabel">Objet social principal *</label><textarea class="finput" id="ci-objet" placeholder="Décrire l'activité principale..."></textarea></div>
+            <div class="fg full"><label class="flabel">Activité secondaire</label><textarea class="finput" id="ci-activite-sec" placeholder="Activité secondaire (optionnel)..."></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAPITAL -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">💰 Capital social</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel">Montant du capital (€) *</label><input class="finput" type="number" id="ci-capital" placeholder="Ex : 500"></div>
+            <div class="fg"><label class="flabel">Valeur nominale d'une part (€)</label><input class="finput" type="number" id="ci-valeur-nominale" placeholder="Ex : 10"></div>
+            <div class="fg"><label class="flabel">Mode de libération</label>
+              <select class="finput fselect" id="ci-mode-liberation">
+                <option value="">—</option>
+                <option value="total">Libération totale</option>
+                <option value="partiel">Libération partielle</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">% libéré à la constitution</label><input class="finput" type="number" id="ci-pct-libere" placeholder="Ex : 20" min="0" max="100"></div>
+            <div class="fg"><label class="flabel">Banque dépositaire</label><input class="finput" id="ci-banque" placeholder="Nom de la banque"></div>
+            <div class="fg"><label class="flabel">Date du dépôt de capital</label><input class="finput" type="date" id="ci-date-depot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIÈGE & DURÉE -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">📍 Siège social & Durée</span></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg full"><label class="flabel">Adresse du siège social *</label><input class="finput" id="ci-siege" placeholder="Numéro, rue, ville, code postal"></div>
+            <div class="fg"><label class="flabel">Type de domiciliation</label>
+              <select class="finput fselect" id="ci-type-domiciliation">
+                <option value="">—</option>
+                <option>Local propre</option>
+                <option>Chez le dirigeant</option>
+                <option>Centre d'affaires</option>
+                <option>Société de domiciliation</option>
+              </select>
+            </div>
             <div class="fg"><label class="flabel">Durée de la société</label><input class="finput" id="ci-duree" value="99 ans"></div>
-            <div class="fg full"><label class="flabel">Siège social</label><input class="finput" id="ci-siege" placeholder="Adresse complète du siège social"></div>
             <div class="fg"><label class="flabel">Date de début d'activité</label><input class="finput" type="date" id="ci-debut"></div>
-            <div class="fg"><label class="flabel">Qualité (fonction)</label><input class="finput" id="ci-qualite" placeholder="Ex : Gérant(e), Président(e)"></div>
+            <div class="fg"><label class="flabel">Date de clôture de l'exercice</label>
+              <select class="finput fselect" id="ci-cloture">
+                <option value="31 décembre">31 décembre</option>
+                <option value="31 mars">31 mars</option>
+                <option value="30 juin">30 juin</option>
+                <option value="30 septembre">30 septembre</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel">Option fiscale</label>
+              <select class="finput fselect" id="ci-option-fiscale">
+                <option value="">—</option>
+                <option value="IS">Impôt sur les Sociétés (IS)</option>
+                <option value="IR">Impôt sur le Revenu (IR)</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -663,9 +718,12 @@ textarea.finput{resize:vertical;min-height:80px;}
           </div>
           <div class="card-body">
             <div style="background:var(--blue-light);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--blue);margin-bottom:18px">
-              ℹ️ Le dirigeant principal est déjà renseigné ci-dessus. Ajoutez ici les autres associés/actionnaires.
+              ℹ️ Le dirigeant principal est déjà renseigné ci-dessus. Ajoutez ici les <strong>autres</strong> associés/actionnaires uniquement.
             </div>
             <div id="associes-list"></div>
+            <div id="no-associes" style="text-align:center;padding:20px;color:var(--text-light);font-size:13px">
+              Aucun associé ajouté. Cliquez sur "+ Ajouter un associé" ci-dessus.
+            </div>
           </div>
         </div>
       </div>
@@ -1163,20 +1221,21 @@ function toggleAssocies() {
 function addAssocie() {
   associeCount++;
   const id = associeCount;
-  const forme = document.getElementById('ci-forme').value;
-  const maxParts = forme === 'SARL' ? 100 : 999;
+  document.getElementById('no-associes').style.display = 'none';
 
   const div = document.createElement('div');
   div.id = `associe-${id}`;
-  div.style.cssText = 'background:var(--bg);border-radius:12px;padding:20px;margin-bottom:14px;border:1px solid var(--border)';
+  div.style.cssText = 'background:var(--bg);border-radius:14px;padding:22px;margin-bottom:16px;border:1.5px solid var(--border)';
   div.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div style="font-weight:700;font-size:13px;color:var(--navy)">Associé ${id}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div style="font-weight:700;font-size:14px;color:var(--navy)">👤 Associé ${id}</div>
       <button class="btn btn-danger btn-sm" onclick="removeAssocie(${id})">✕ Supprimer</button>
     </div>
     <div class="form-grid">
       <div class="fg"><label class="flabel">Civilité</label>
-        <select class="finput fselect" id="a${id}-civilite"><option value="">—</option><option>M.</option><option>Mme</option></select>
+        <select class="finput fselect" id="a${id}-civilite">
+          <option value="">—</option><option>M.</option><option>Mme</option>
+        </select>
       </div>
       <div class="fg"><label class="flabel">Situation matrimoniale</label>
         <select class="finput fselect" id="a${id}-matrimonial">
@@ -1189,8 +1248,7 @@ function addAssocie() {
       <div class="fg"><label class="flabel">Date de naissance</label><input class="finput" type="date" id="a${id}-ddn"></div>
       <div class="fg"><label class="flabel">Lieu de naissance</label><input class="finput" id="a${id}-lieu" placeholder="Ville, Pays"></div>
       <div class="fg"><label class="flabel">Nationalité</label><input class="finput" id="a${id}-nationalite"></div>
-      <div class="fg"><label class="flabel">Téléphone</label><input class="finput" id="a${id}-tel"></div>
-      <div class="fg"><label class="flabel">Email</label><input class="finput" type="email" id="a${id}-email" placeholder="email@exemple.com"></div>
+      <div class="fg"><label class="flabel">Profession</label><input class="finput" id="a${id}-profession"></div>
       <div class="fg"><label class="flabel">Régime matrimonial</label>
         <select class="finput fselect" id="a${id}-regime">
           <option value="">—</option>
@@ -1201,9 +1259,27 @@ function addAssocie() {
           <option>Sans objet</option>
         </select>
       </div>
-      <div class="fg full"><label class="flabel">Adresse</label><input class="finput" id="a${id}-adresse" placeholder="Adresse complète"></div>
-      <div class="fg"><label class="flabel">Nombre de parts</label><input class="finput" type="number" id="a${id}-parts" placeholder="Ex : 50" min="1" max="${maxParts}"></div>
-      <div class="fg"><label class="flabel">Montant apporté (€)</label><input class="finput" type="number" id="a${id}-montant" placeholder="Ex : 500"></div>
+      <div class="fg"><label class="flabel">Email</label><input class="finput" type="email" id="a${id}-email" placeholder="email@exemple.com"></div>
+      <div class="fg"><label class="flabel">Téléphone</label><input class="finput" id="a${id}-tel"></div>
+      <div class="fg full"><label class="flabel">Adresse complète</label><input class="finput" id="a${id}-adresse" placeholder="Numéro, rue, ville, pays"></div>
+    </div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:700;color:var(--text-light);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">Parts / Apport</div>
+      <div class="form-grid">
+        <div class="fg"><label class="flabel">Nombre de parts</label><input class="finput" type="number" id="a${id}-parts" placeholder="Ex : 50" min="1"></div>
+        <div class="fg"><label class="flabel">Montant apporté (€)</label><input class="finput" type="number" id="a${id}-montant" placeholder="Ex : 500"></div>
+        <div class="fg"><label class="flabel">Nature de l apport</label>
+          <select class="finput fselect" id="a${id}-nature">
+            <option value="">—</option>
+            <option>Numéraire (espèces)</option>
+            <option>Nature (bien matériel)</option>
+            <option>Industrie (compétences)</option>
+          </select>
+        </div>
+        <div class="fg"><label class="flabel">Qualité dans la société</label>
+          <input class="finput" id="a${id}-qualite" placeholder="Ex : Associé(e), Cogérant(e)">
+        </div>
+      </div>
     </div>`;
   document.getElementById('associes-list').appendChild(div);
   associes.push(id);
@@ -1212,6 +1288,7 @@ function addAssocie() {
 function removeAssocie(id) {
   document.getElementById(`associe-${id}`)?.remove();
   associes = associes.filter(a => a !== id);
+  if (associes.length === 0) document.getElementById('no-associes').style.display = 'block';
 }
 
 function getAssociesData() {
@@ -1224,11 +1301,14 @@ function getAssociesData() {
     date_naissance: document.getElementById(`a${id}-ddn`)?.value || '',
     lieu_naissance: document.getElementById(`a${id}-lieu`)?.value?.trim() || '',
     nationalite: document.getElementById(`a${id}-nationalite`)?.value?.trim() || '',
+    profession: document.getElementById(`a${id}-profession`)?.value?.trim() || '',
     telephone: document.getElementById(`a${id}-tel`)?.value?.trim() || '',
     email: document.getElementById(`a${id}-email`)?.value?.trim() || '',
     adresse: document.getElementById(`a${id}-adresse`)?.value?.trim() || '',
     parts: document.getElementById(`a${id}-parts`)?.value || '',
-    montant: document.getElementById(`a${id}-montant`)?.value || ''
+    montant: document.getElementById(`a${id}-montant`)?.value || '',
+    nature_apport: document.getElementById(`a${id}-nature`)?.value || '',
+    qualite: document.getElementById(`a${id}-qualite`)?.value?.trim() || ''
   })).filter(a => a.nom || a.prenom);
 }
 async function loadClientHome(email) {
@@ -1283,26 +1363,43 @@ async function loadClientInfosForm(email) {
   const {data:d} = await sb.from('dossiers').select('*').eq('email',email).single();
   if(!d) return;
   const fields = {
-    'ci-civilite':d.civilite,'ci-nationalite':d.nationalite,
-    'ci-nom':d.nom,'ci-prenom':d.prenom,
-    'ci-ddn':d.date_naissance||'','ci-lieu-naiss':d.lieu_naissance,
-    'ci-adresse':d.adresse,'ci-tel':d.telephone,
-    'ci-nom-pere':d.nom_pere,'ci-prenom-pere':d.prenom_pere,
-    'ci-nom-mere':d.nom_mere,'ci-prenom-mere':d.prenom_mere,
-    'ci-forme':d.forme_juridique,'ci-denomination':d.denomination,
-    'ci-objet':d.objet_social,'ci-capital':d.capital||'',
-    'ci-siege':d.siege_social,'ci-duree':d.duree||'99 ans',
-    'ci-debut':d.date_debut||'','ci-qualite':d.qualite
+    // Identité
+    'ci-civilite':d.civilite, 'ci-nom':d.nom, 'ci-prenom':d.prenom,
+    'ci-ddn':d.date_naissance||'', 'ci-lieu-naiss':d.lieu_naissance,
+    'ci-nationalite':d.nationalite, 'ci-adresse':d.adresse, 'ci-tel':d.telephone,
+    'ci-matrimonial':d.matrimonial, 'ci-profession':d.profession,
+    'ci-regime':d.regime_matrimonial, 'ci-type-piece':d.type_piece,
+    'ci-num-piece':d.num_piece, 'ci-exp-piece':d.exp_piece||'',
+    // Filiation
+    'ci-nom-pere':d.nom_pere, 'ci-prenom-pere':d.prenom_pere,
+    'ci-nom-mere':d.nom_mere, 'ci-prenom-mere':d.prenom_mere,
+    // Société
+    'ci-forme':d.forme_juridique, 'ci-denomination':d.denomination,
+    'ci-sigle':d.sigle, 'ci-objet':d.objet_social,
+    'ci-activite-sec':d.activite_secondaire, 'ci-qualite':d.qualite,
+    // Capital
+    'ci-capital':d.capital||'', 'ci-valeur-nominale':d.valeur_nominale||'',
+    'ci-mode-liberation':d.mode_liberation, 'ci-pct-libere':d.pct_libere||'',
+    'ci-banque':d.banque_depositaire, 'ci-date-depot':d.date_depot_capital||'',
+    // Siège & Durée
+    'ci-siege':d.siege_social, 'ci-type-domiciliation':d.type_domiciliation,
+    'ci-duree':d.duree||'99 ans', 'ci-debut':d.date_debut||'',
+    'ci-cloture':d.date_cloture||'31 décembre', 'ci-option-fiscale':d.option_fiscale
   };
   Object.entries(fields).forEach(([id,val])=>{
     const el=document.getElementById(id); if(el) el.value=val||'';
   });
   toggleAssocies();
+  // Charger les associés existants
+  if(d.associes && Array.isArray(d.associes)) {
+    d.associes.forEach(() => addAssocie());
+  }
 }
 
 async function saveClientInfos() {
   const associesData = getAssociesData();
   const {error} = await sb.from('dossiers').update({
+    // Identité dirigeant
     civilite: v('ci-civilite'),
     nom: v('ci-nom').toUpperCase(),
     prenom: v('ci-prenom'),
@@ -1311,19 +1408,40 @@ async function saveClientInfos() {
     nationalite: v('ci-nationalite'),
     adresse: v('ci-adresse'),
     telephone: v('ci-tel'),
+    matrimonial: v('ci-matrimonial'),
+    profession: v('ci-profession'),
+    regime_matrimonial: v('ci-regime'),
+    type_piece: v('ci-type-piece'),
+    num_piece: v('ci-num-piece'),
+    exp_piece: v('ci-exp-piece') || null,
+    // Filiation
     nom_pere: v('ci-nom-pere'),
     prenom_pere: v('ci-prenom-pere'),
     nom_mere: v('ci-nom-mere'),
     prenom_mere: v('ci-prenom-mere'),
+    // Société
     forme_juridique: v('ci-forme'),
     denomination: v('ci-denomination'),
+    sigle: v('ci-sigle'),
     objet_social: v('ci-objet'),
+    activite_secondaire: v('ci-activite-sec'),
+    qualite: v('ci-qualite'),
+    // Capital
     capital: v('ci-capital') || null,
+    valeur_nominale: v('ci-valeur-nominale') || null,
+    mode_liberation: v('ci-mode-liberation'),
+    pct_libere: v('ci-pct-libere') || null,
+    banque_depositaire: v('ci-banque'),
+    date_depot_capital: v('ci-date-depot') || null,
+    // Siège & Durée
     siege_social: v('ci-siege'),
+    type_domiciliation: v('ci-type-domiciliation'),
     duree: v('ci-duree'),
     date_debut: v('ci-debut') || null,
-    qualite: v('ci-qualite'),
-    notes: associesData.length ? JSON.stringify(associesData) : null,
+    date_cloture: v('ci-cloture'),
+    option_fiscale: v('ci-option-fiscale'),
+    // Associés (stockés en JSON)
+    associes: associesData.length ? associesData : null,
     statut: 'en_cours',
     progression: 60
   }).eq('email', currentClientEmail);
