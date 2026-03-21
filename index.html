@@ -1666,7 +1666,7 @@ function openDoc(d,type) {
       + toolbar
       + '<div class="wrap">'
       + '<div class="doc-header"><div class="soc-name">' + denomination + '</div>'
-      + '<div class="soc-info">' + (d.forme_juridique||'___') + ' · Au capital de ' + capitalStr + '<br>Siège social : ' + siege + '<br>En cours d\'immatriculation</div></div>'
+      + '<div class="soc-info">' + (d.forme_juridique||'___') + ' · Au capital de ' + capitalStr + '<br>Siège social : ' + siege + '<br>En cours d&#39;immatriculation</div></div>'
       + '<div class="doc-title">Liste des souscripteurs</div>'
       + '<table><thead><tr><th style="width:38%">Associé(e) / Actionnaire</th><th>Nb parts</th><th>Val. nominale</th><th>Montant apporté</th><th>Nature apport</th><th>Libéré</th></tr></thead>'
       + '<tbody>' + rows
@@ -1684,174 +1684,459 @@ function openDoc(d,type) {
     return;
   }
 
-  else if (type === 'statuts_eurl') {
-    html = '<div class="doc-header"><div class="soc-name">' + denomination + '</div>'
-      + '<div class="soc-info">Société à responsabilité limitée unipersonnelle<br>Au capital de ' + capitalStr + '<br>Siège social : ' + siege + '</div>'
-      + '<div class="rcs">RCS · en cours d\'immatriculation</div></div>'
-      + '<div class="doc-title">Statuts constitutifs</div><hr>'
-      + '<h2>La soussignée :</h2>'
-      + '<p><span class="bold">' + nomComplet + '</span>, demeurant à <span class="bold">' + adresse + '</span>, né(e) le <span class="bold">' + ddn + '</span> à <span class="bold">' + lieu + '</span>, de nationalité <span class="bold">' + nationalite + '</span>, ' + matrimonial + ',</p>'
-      + '<p>A arrêté ainsi qu\'il suit les statuts d\'une Société à responsabilité limitée unipersonnelle.</p>'
-      + '<div class="chapter">Chapitre I — Forme · Objet · Dénomination · Siège · Durée</div>'
-      + '<h2>Article 1 – Forme juridique</h2>'
-      + '<p>Il est formé par l\'associé unique, soussigné(e), propriétaire des parts sociales ci-après créées une société à responsabilité limitée régie par les dispositions légales et réglementaires applicables et par les présents statuts.</p>'
-      + '<h2>Article 2 – Objet social</h2>'
-      + '<p>La Société a pour objet en France et à l\'étranger :</p>'
-      + '<p class="indent">' + objet + (d.activite_secondaire ? '<br><br>' + d.activite_secondaire : '') + '</p>'
-      + '<p>Et, d\'une façon générale, toutes opérations industrielles, commerciales, financières, mobilières ou immobilières, se rapportant directement ou indirectement à l\'objet social ou susceptibles d\'en faciliter l\'extension ou le développement.</p>'
-      + '<h2>Article 3 – Dénomination sociale</h2>'
-      + '<p>La dénomination de la Société est : <span class="bold">' + denomination + '</span>' + (sigle ? '<br>Et pour sigle : <span class="bold">' + sigle + '</span>' : '') + '</p>'
-      + '<p>Dans tous les actes, factures, annonces et documents émanant de la Société, la dénomination sociale doit toujours être précédée ou suivie des mots « Société à responsabilité limitée » ou des initiales « SARL » et de l\'indication du montant du capital social.</p>'
-      + '<h2>Article 4 – Siège social</h2>'
-      + '<p>Le siège social est fixé au : <span class="bold">' + siege + '</span></p>'
-      + '<p>Il pourra être transféré en tout autre endroit du même département par simple décision du gérant, sous réserve de ratification par l\'associé unique, et en tout autre lieu suivant décision de l\'associé unique.</p>'
-      + '<h2>Article 5 – Exercice social</h2>'
-      + '<p>Chaque exercice social a une durée d\'une année qui commence le <span class="bold">1er janvier</span> et finit le <span class="bold">' + cloture + '</span> de chaque année.</p>'
-      + '<p>Par exception, le premier exercice sera clôturé le <span class="bold">' + cloture + ' ' + anneeCloture + '</span>.</p>'
-      + '<h2>Article 6 – Durée</h2>'
-      + '<p>La durée de la Société est fixée à <span class="bold">' + duree + '</span> à compter de la date de son immatriculation au Registre du Commerce et des Sociétés, sauf dissolution anticipée ou prorogation.</p>'
-      + '<div class="chapter">Chapitre II — Apports · Capital social</div>'
-      + '<h2>Article 7 – Apports</h2>'
-      + '<p><span class="bold">' + nomComplet + '</span> apporte à la Société une somme totale de <span class="bold">' + capitalStr + '</span> correspondant à <span class="bold">' + nbParts + ' parts sociales</span> de <span class="bold">' + valNom + ' euros</span> de valeur nominale chacune, entièrement souscrites et intégralement libérées.</p>'
-      + '<p>La somme de <span class="bold">' + capitalStr + '</span> a été déposée, dès avant ce jour, au crédit d\'un compte ouvert au nom de la Société en formation, le <span class="bold">' + dateDepot + '</span> à la banque <span class="bold">' + banque + '</span>.</p>'
-      + '<h2>Article 8 – Capital social</h2>'
-      + '<p>Le capital social est fixé à la somme de <span class="bold">' + capitalStr + '</span>.</p>'
-      + '<p>Il est divisé en <span class="bold">' + nbParts + ' parts</span> de <span class="bold">' + valNom + ' euros</span> chacune, entièrement libérées, souscrites en totalité par l\'associé unique :</p>'
-      + '<p class="indent"><span class="bold">' + nomComplet + '</span> .................................................. <span class="bold">' + nbParts + ' parts</span></p>'
-      + '<div class="chapter">Chapitre III — Parts sociales</div>'
-      + '<h2>Article 9 – Droits et obligations</h2>'
-      + '<p>Chaque part sociale donne droit à une voix dans tous les votes et délibérations et confère à son propriétaire un droit égal dans les bénéfices et dans tout l\'actif social.</p>'
-      + '<h2>Article 10 – Transmissions des parts sociales</h2>'
-      + '<p>Les transmissions de parts sociales consenties par l\'associé unique sont libres. Elles sont constatées par un acte sous seing privé ou par un acte notarié.</p>'
-      + '<div class="chapter">Chapitre IV — Gérance</div>'
-      + '<h2>Article 11 – Gérance</h2>'
-      + '<p>La Société est représentée, dirigée et administrée par un ou plusieurs gérants, personnes physiques, associés ou non associés de la Société, désignés par l\'associé unique.</p>'
-      + '<h2>Article 12 – Pouvoirs du gérant</h2>'
-      + '<p>Le Gérant dirige la Société et la représente à l\'égard des tiers. Il est investi de tous les pouvoirs nécessaires pour agir en toutes circonstances au nom de la Société dans la limite de l\'objet social.</p>'
-      + '<div class="chapter">Chapitre V — Décisions de l\'associé unique</div>'
-      + '<h2>Article 13 – Décisions</h2>'
-      + '<p>L\'associé unique exerce les pouvoirs qui sont dévolus par la loi aux associés réunis en assemblée générale. Les décisions unilatérales sont répertoriées dans un registre coté et paraphé.</p>'
-      + '<div class="chapter">Chapitre VI — Résultats · Dissolution</div>'
-      + '<h2>Article 14 – Affectation des résultats</h2>'
-      + '<p>Après approbation des comptes et constatation de l\'existence d\'un bénéfice distribuable, il est prélevé 5 % pour constituer le fonds de réserve légale. Le surplus est attribué à l\'associé unique.</p>'
-      + '<h2>Article 15 – Dissolution · Liquidation</h2>'
-      + '<p>La Société est dissoute dans les cas prévus par la loi ou en cas de dissolution anticipée décidée par l\'associé unique. La décision nomme un ou plusieurs liquidateurs.</p>'
-      + '<div class="chapter">Chapitre VII — Constitution · Pouvoirs</div>'
-      + '<h2>Article 16 – Option fiscale</h2>'
-      + '<p>L\'associé unique déclare opter pour l\'imposition à l\'<span class="bold">Impôt sur les ' + (optionFiscale==='IR'?'Revenus (IR)':'Sociétés (IS)') + '</span>.</p>'
-      + '<h2>Article 17 – Pouvoirs</h2>'
-      + '<p>Tous pouvoirs sont donnés au gérant ou à son mandataire à l\'effet d\'accomplir toutes formalités de publicité prescrites par la loi.</p>'
-      + '<div class="sig-section"><p>Fait à Saint-Martin, le ' + date + '</p><p>en 4 exemplaires originaux</p><br>'
-      + '<div class="sig-block"><p class="sig-name">' + nomComplet + '</p><p class="sig-role">Associé(e) unique et ' + qualite + '</p><div class="sig-line"></div><p class="sig-note">Signature précédée de la mention « Lu et approuvé »</p></div></div>';
-  }
 
   else if (type === 'statuts_sarl') {
-    const soussignes = allAssocies.map(function(a, i) {
-      return '<p class="indent"><span class="bold">' + nomA(a) + '</span>, demeurant à <span class="bold">' + adrA(a,i) + '</span>, né(e) le <span class="bold">' + ddnA(a) + '</span> à <span class="bold">' + lieuA(a) + '</span>, ' + matrA(a) + ',</p>';
+    const soussignesHTML = allAssocies.map(function(a, i) {
+      return '<p style="margin:10px 0;">' + (i+1) + '° <span class="bold">' + nomA(a) + '</span>, demeurant à <span class="bold">' + adrA(a,i) + '</span>, né(e) le <span class="bold">' + ddnA(a) + '</span> à <span class="bold">' + lieuA(a) + '</span>, de nationalité <span class="bold">' + natA(a) + '</span>, ' + (matrA(a)||'') + ',</p>';
     }).join('');
 
-    const apports = allAssocies.map(function(a, i) {
+    const soussignesText = allAssocies.map(function(a, i) {
+      return (i+1) + '° ' + nomA(a) + ', demeurant à ' + adrA(a,i) + ', né(e) le ' + ddnA(a) + ' à ' + lieuA(a) + ', de nationalité ' + natA(a) + ', ' + (matrA(a)||'') + ',';
+    }).join('\n\n');
+
+    const apportsHTML = allAssocies.map(function(a, i) {
       const nb = partsA(a, i);
       const mt = montantA(a, i);
-      return '<p class="indent"><span class="bold">' + nomA(a) + '</span> apporte à la Société une somme totale de <span class="bold">' + mt.toLocaleString('fr-FR') + ' euros</span> correspondant à <span class="bold">' + nb + ' parts sociales</span> de <span class="bold">' + valNom + ' euro(s)</span> de valeur nominale chacune, entièrement souscrites et intégralement libérées.</p>';
+      return '<p>' + (i+1) + '° <span class="bold">' + nomA(a) + '</span> apporte à la Société une somme totale de <span class="bold">' + mt.toLocaleString('fr-FR') + ' euros</span> correspondant à <span class="bold">' + nb + ' parts sociales</span> de <span class="bold">' + valNom + ' euro(s)</span> de valeur nominale chacune, entièrement souscrites et intégralement libérées.</p>'
+        + '<p>Laquelle somme de <span class="bold">' + mt.toLocaleString('fr-FR') + ' euros</span> a été régulièrement déposée sur un compte ouvert au nom de la Société en formation, le <span class="bold">' + dateDepot + '</span> à la banque <span class="bold">' + banque + '</span>.</p>';
     }).join('');
 
-    const repartition = allAssocies.map(function(a, i) {
-      const nb = partsA(a, i);
-      return '<p class="indent">à <span class="bold">' + nomA(a) + '</span> .................................................. <span class="bold">' + nb + ' parts</span></p>';
+    const recapHTML = allAssocies.map(function(a, i) {
+      return '<p class="indent">– Apports en numéraire de <span class="bold">' + nomA(a) + '</span> : <span class="bold">' + montantA(a,i).toLocaleString('fr-FR') + ' euros</span></p>';
     }).join('');
 
-    const signatures = allAssocies.map(function(a) {
-      return '<div class="sig-block"><p class="sig-name">' + nomA(a) + '</p><p class="sig-role">' + (a.qualite||qualite) + '</p><div class="sig-line"></div><p class="sig-note">Signature précédée de la mention « Lu et approuvé »</p></div>';
+    const repartitionHTML = allAssocies.map(function(a, i) {
+      return '<p class="indent">à <span class="bold">' + nomA(a) + '</span> ...................................................... <span class="bold">' + partsA(a,i) + ' parts</span></p>';
     }).join('');
 
-    html = '<div class="doc-header"><div class="soc-name">' + denomination + '</div>'
-      + '<div class="soc-info">Société à responsabilité limitée<br>Au capital de ' + capitalStr + '<br>Siège social : ' + siege + '</div></div>'
-      + '<div class="doc-title">Statuts</div><hr>'
-      + '<h2>Les soussignés,</h2>' + soussignes
-      + '<p>Ont établi ainsi qu\'il suit les statuts de la société à responsabilité limitée devant exister entre eux et toute autre personne qui viendrait ultérieurement à acquérir la qualité d\'associé.</p>'
-      + '<div class="chapter">Chapitre I — Forme · Objet · Dénomination · Siège · Exercice · Durée</div>'
-      + '<h2>Article 1 – Forme</h2>'
-      + '<p>Il est formé entre les propriétaires des parts sociales ci-après créées et de celles qui pourraient l\'être ultérieurement, une Société à Responsabilité Limitée, régie par les articles L223-1 et suivants du Code de commerce, ainsi que par les présents statuts.</p>'
-      + '<h2>Article 2 – Objet social</h2>'
+    const sigsHTML = allAssocies.map(function(a) {
+      return '<div class="sig-block"><p class="sig-name">' + nomA(a) + '</p><p class="sig-role">' + (a.qualite||qualite) + '</p><div class="sig-line"></div><p class="sig-note">Signature précédée de la mention manuscrite « Lu et approuvé »</p></div>';
+    }).join('');
+
+    const coverCSS = `
+      .cover-page{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:90vh;text-align:center;padding:60px;}
+      .cover-denom{font-family:'Inter',sans-serif;font-size:20pt;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#1A2E4A;margin-bottom:16px;}
+      .cover-line{border:none;border-top:1.5px solid #1A2E4A;width:320px;margin:0 auto 24px;}
+      .cover-info{font-family:'EB Garamond',Georgia,serif;font-size:12pt;color:#444;line-height:2.2;margin-bottom:40px;}
+      .cover-title{font-family:'Inter',sans-serif;font-size:14pt;font-weight:600;letter-spacing:0.35em;text-transform:uppercase;color:#1a1a1a;margin-top:20px;}
+      @media print{.cover-page{page-break-after:always;}@page{margin:2.5cm 2cm;}h2{page-break-after:avoid;}}
+    `;
+
+    const coverHTML = '<div class="cover-page">'
+      + '<div class="cover-denom">' + denomination + '</div>'
+      + '<hr class="cover-line">'
+      + '<div class="cover-info">'
+      + 'Société à responsabilité limitée<br>'
+      + 'Au capital de ' + capitalStr + '<br>'
+      + 'Siège social : ' + siege + '<br>'
+      + '<em>En cours d&#39;immatriculation</em>'
+      + '</div>'
+      + '<div class="cover-title">Statuts</div>'
+      + '</div>';
+
+    const bodyHTML = ''
+      + '<h2>Les soussignés,</h2>'
+      + soussignesHTML
+      + '<p>Ont établi ainsi qu\'il suit les statuts de la société à responsabilité limitée devant exister entre eux et toute autre personne qui viendrait ultérieurement à acquérir la qualité d\'associé (la « Société »).</p>'
+      + '<p>Les conjoints des associés mariés sous le régime de la communauté ont été dûment avertis conformément aux dispositions de l\'article 1832-2 du Code civil, de l\'apport fait par leur conjoint au moyen de deniers appartenant à la communauté.</p>'
+
+      + '<div class="chapter">Chapitre I — Forme · Objet · Dénomination · Siège · Exercice social · Durée</div>'
+
+      + '<h2>Article 1 - Forme</h2>'
+      + '<p>Il est formé entre les propriétaires des parts sociales ci-après créées et de celles qui pourraient l\'être ultérieurement, une Société à Responsabilité Limitée, qui sera régie par les lois en vigueur et notamment par les articles L223-1 et suivants du Code de commerce, ainsi que par les présents statuts.</p>'
+
+      + '<h2>Article 2 - Objet social</h2>'
       + '<p>La société a pour objet :</p>'
-      + '<p class="indent">' + objet + (d.activite_secondaire ? '<br><br>' + d.activite_secondaire : '') + '</p>'
-      + '<p>Et, plus généralement, toutes opérations industrielles, commerciales, financières, mobilières ou immobilières, se rapportant directement ou indirectement à l\'objet social ou susceptibles d\'en faciliter l\'extension ou le développement.</p>'
-      + '<h2>Article 3 – Dénomination sociale</h2>'
+      + '<p class="indent">• ' + objet.replace(/\n/g, '<br>• ') + ' ;</p>'
+      + (d.activite_secondaire ? '<p class="indent">• ' + d.activite_secondaire + ' ;</p>' : '')
+      + '<p class="indent">• Et, plus généralement, toutes opérations industrielles, commerciales, financières, mobilières ou immobilières, se rapportant directement ou indirectement à l\'objet social ou susceptibles d\'en faciliter l\'extension ou le développement.</p>'
+
+      + '<h2>Article 3 - Dénomination sociale</h2>'
       + '<p>La société a pour dénomination sociale : <span class="bold">' + denomination + '</span>' + (sigle ? '<br>Et pour sigle : <span class="bold">' + sigle + '</span>' : '') + '</p>'
       + '<p>Tous les actes et les documents émanant de la société et destinés aux tiers indiqueront la dénomination sociale, précédée ou suivie immédiatement des mots « Société à Responsabilité Limitée » ou des initiales « SARL » et de l\'énonciation du capital social.</p>'
-      + '<h2>Article 4 – Siège social</h2>'
+
+      + '<h2>Article 4 - Siège social</h2>'
       + '<p>Le siège social est fixé à : <span class="bold">' + siege + '</span></p>'
       + '<p>Il pourra être transféré en tout autre lieu de la même ville ou des départements limitrophes par simple décision de la gérance, et en tout autre endroit par décision extraordinaire de l\'assemblée des associés.</p>'
-      + '<h2>Article 5 – Exercice social</h2>'
-      + '<p>Chaque exercice social a une durée d\'une année qui commence le <span class="bold">1er janvier</span> et finit le <span class="bold">' + cloture + '</span> de chaque année. Par exception, le premier exercice sera clôturé le <span class="bold">' + cloture + ' ' + anneeCloture + '</span>.</p>'
-      + '<h2>Article 6 – Durée</h2>'
+
+      + '<h2>Article 5 - Exercice social</h2>'
+      + '<p>Chaque exercice social a une durée d\'une année qui commence le <span class="bold">1er janvier</span> et finit le <span class="bold">' + cloture + '</span> de chaque année.</p>'
+      + '<p>Par exception, le premier exercice sera clôturé le <span class="bold">' + cloture + ' ' + anneeCloture + '</span>.</p>'
+
+      + '<h2>Article 6 - Durée</h2>'
       + '<p>La durée de la société est fixée à <span class="bold">' + duree + '</span> à compter de la date de son immatriculation au Registre du Commerce et des Sociétés, sauf prolongation ou dissolution anticipée.</p>'
+
       + '<div class="chapter">Chapitre II — Apports · Capital social</div>'
-      + '<h2>Article 7 – Apports</h2>' + apports
-      + '<p>La somme totale de <span class="bold">' + capitalStr + '</span> a été déposée le <span class="bold">' + dateDepot + '</span> à la banque <span class="bold">' + banque + '</span>.</p>'
-      + '<h2>Article 8 – Capital social</h2>'
+
+      + '<h2>Article 7 - Apports</h2>'
+      + '<p style="font-weight:600;font-size:10.5pt;">Apports en numéraire</p>'
+      + apportsHTML
+      + '<p style="font-weight:600;font-size:10.5pt;margin-top:16px;">Récapitulation des apports concourant à la formation du capital social</p>'
+      + recapHTML
+      + '<p class="indent bold">Total des apports formant le capital social : ' + capitalStr + '</p>'
+
+      + '<h2>Article 8 - Capital social</h2>'
       + '<p>Le capital social est fixé à la somme de <span class="bold">' + capitalStr + '</span>.</p>'
-      + '<p>Il est divisé en <span class="bold">' + nbParts + ' parts</span> de <span class="bold">' + valNom + ' euros</span> chacune, entièrement libérées, souscrites en totalité par les associés et attribuées à chacun d\'eux en proportion de leurs apports respectifs, à savoir :</p>'
-      + repartition
+      + '<p>Il est divisé en <span class="bold">' + nbParts + ' parts</span> de <span class="bold">' + valNom + ' euro(s)</span> chacune, entièrement libérées, souscrites en totalité par les associés et attribuées à chacun d\'eux en proportion de leurs apports respectifs, à savoir :</p>'
+      + repartitionHTML
       + '<p class="indent bold">Total des parts formant le capital social : ' + nbParts + ' parts.</p>'
+      + '<p>Les soussignés déclarent expressément que ces parts sociales ont été réparties entre eux dans la proportion sus-indiquée.</p>'
+
       + '<div class="chapter">Chapitre III — Parts sociales · Cession de parts</div>'
-      + '<h2>Article 9 – Droits et obligations attachés aux parts sociales</h2>'
+
+      + '<h2>Article 9 - Droits et obligations attachés aux parts sociales</h2>'
       + '<p>Chaque part sociale donne droit à une voix dans tous les votes et délibérations et confère à son propriétaire un droit égal dans les bénéfices de la société et dans tout l\'actif social.</p>'
-      + '<h2>Article 10 – Forme des cessions de parts</h2>'
-      + '<p>La cession des parts sociales doit être constatée par écrit. Elle n\'est opposable à la société qu\'après avoir été signifiée à cette dernière au moyen du dépôt d\'un original au siège social.</p>'
-      + '<h2>Article 11 – Agrément des tiers</h2>'
-      + '<p>Les parts sociales sont librement cessibles entre conjoints, ascendants et descendants. Elles ne peuvent être transmises à des tiers qu\'avec le consentement de la majorité des associés représentant au moins la moitié des parts sociales.</p>'
-      + '<h2>Article 12 – Décès d\'un associé</h2>'
-      + '<p>En cas de décès d\'un associé, la société continuera entre les associés survivants et les héritiers de l\'associé décédé, sous condition de leur éventuel agrément.</p>'
-      + '<h2>Article 13 – Réunion de toutes les parts en une seule main</h2>'
-      + '<p>En cas de pluralité d\'associés, la réunion de toutes les parts en une seule main n\'entraîne pas la dissolution de la société.</p>'
-      + '<div class="chapter">Chapitre IV — Gestion et contrôle</div>'
-      + '<h2>Article 14 – Gérance</h2>'
-      + '<p>La société est administrée par un ou plusieurs gérants, personnes physiques, choisi(s) parmi les associés ou en dehors d\'eux, désignés par décision des associés représentant plus de la moitié des parts sociales. En rémunération de ses fonctions, chaque gérant a droit à une rémunération dont le montant est déterminé par décision collective ordinaire des associés.</p>'
-      + '<h2>Article 15 – Pouvoirs et responsabilité de la gérance</h2>'
-      + '<p>Dans ses rapports avec les associés, la gérance engage la société par les actes entrant dans l\'objet social. Dans les rapports avec les tiers de bonne foi, la société est engagée même par les actes du gérant qui ne relèvent pas de l\'objet social.</p>'
-      + '<h2>Article 16 – Commissaire aux comptes</h2>'
-      + '<p>La nomination d\'un commissaire aux comptes devient obligatoire dès que la société dépasse deux des trois seuils suivants : chiffre d\'affaires HT supérieur ou égal à 3 100 000 €, total du bilan supérieur ou égal à 1 550 000 €, nombre moyen de salariés supérieur ou égal à 50.</p>'
-      + '<div class="chapter">Chapitre V — Conventions</div>'
-      + '<h2>Article 17 – Conventions soumises à l\'approbation de l\'assemblée</h2>'
-      + '<p>Sous réserve des interdictions légales, toute convention conclue entre la société et l\'un de ses gérants ou associés doit être soumise au contrôle de l\'assemblée des associés.</p>'
-      + '<h2>Article 18 – Conventions interdites</h2>'
-      + '<p>À peine de nullité du contrat, il est interdit aux gérants ou associés de contracter des emprunts auprès de la société, de se faire consentir par elle un découvert, ainsi que de faire cautionner ou avaliser par elle leurs engagements envers les tiers.</p>'
-      + '<h2>Article 19 – Comptes courants d\'associés</h2>'
-      + '<p>Chaque associé peut consentir des avances à la société sous forme de versements dans la caisse sociale. Les comptes courants ne peuvent jamais être débiteurs.</p>'
+      + '<p>La propriété d\'une part emporte de plein droit adhésion aux statuts de la société et aux décisions adoptées dans le cadre de ladite société.</p>'
+
+      + '<h2>Article 10 - Forme des cessions de parts</h2>'
+      + '<p>La cession des parts sociales doit être constatée par écrit. Elle n\'est opposable à la société qu\'après avoir été signifiée à cette dernière au moyen du dépôt d\'un original au siège social contre remise par le gérant d\'une attestation de ce dépôt.</p>'
+      + '<p>Pour être opposable aux tiers, un exemplaire des statuts modifiés est déposé au greffe, éventuellement par voie électronique. Les parts sont librement cessibles entre les associés.</p>'
+
+      + '<h2>Article 11 - Agrément des tiers</h2>'
+      + '<p>Les parts sociales sont librement cessibles entre :</p>'
+      + '<p class="indent">– conjoints ;<br>– ascendants et descendants.</p>'
+      + '<p>Elles ne peuvent être transmises à des tiers, autres que les catégories visées ci-dessus, qu\'avec le consentement de la majorité des associés représentant au moins la moitié des parts sociales.</p>'
+      + '<p>Ce consentement est sollicité dans les conditions prévues par la loi.</p>'
+
+      + '<h2>Article 12 - Décès d\'un associé</h2>'
+      + '<p>En cas de décès d\'un associé, la société continuera entre les associés survivants et les héritiers de l\'associé décédé, sous condition de leur éventuel agrément tel que prévu à l\'article 11 des présents statuts.</p>'
+
+      + '<h2>Article 13 - Réunion de toutes les parts en une seule main</h2>'
+      + '<p>En cas de pluralité d\'associés, la réunion de toutes les parts en une seule main n\'entraîne pas la dissolution de la société qui continue d\'exister avec un associé unique. Celui-ci exerce alors tous les pouvoirs dévolus à l\'Assemblée des associés.</p>'
+
+      + '<div class="chapter">Chapitre IV — Gestion et contrôle de la société</div>'
+
+      + '<h2>Article 14 - Gérance</h2>'
+      + '<p>La société est administrée par un ou plusieurs gérants, personnes physiques, choisi(s) parmi les associés ou en dehors d\'eux.</p>'
+      + '<p>Le ou les gérant(s) sont désignés pour la durée de la société ou pour un nombre déterminé d\'exercices, par décision des associés représentant plus de la moitié des parts sociales. Ils peuvent être révoqués dans les mêmes conditions.</p>'
+      + '<p>En rémunération de ses fonctions et en compensation de la responsabilité attachée à la gestion, chaque gérant a droit à une rémunération fixe, proportionnelle ou mixte, dont le montant et les modalités de paiement sont déterminés par décision collective ordinaire des associés.</p>'
+
+      + '<h2>Article 15 - Pouvoirs et responsabilité de la gérance</h2>'
+      + '<p>Dans ses rapports avec les associés, la gérance engage la société par les actes entrant dans l\'objet social. Ses pouvoirs peuvent être limités dans l\'acte de nomination.</p>'
+      + '<p>Dans les rapports avec les tiers de bonne foi, la société est engagée, même par les actes du gérant qui ne relèvent pas de l\'objet social.</p>'
+      + '<p>Le gérant ne pourra se porter, au nom de la société, caution solidaire ou aval au profit d\'un tiers, sans l\'agrément préalable des associés représentant au moins la moitié des parts sociales.</p>'
+      + '<p>L\'opposition formée par un gérant aux actes d\'un autre gérant est sans effet à l\'égard des tiers à moins qu\'il ne soit établi qu\'ils en ont eu connaissance.</p>'
+      + '<p>Le ou les gérants peuvent, sous leur responsabilité, constituer des mandataires pour un ou plusieurs objets déterminés.</p>'
+      + '<p>Le ou les gérants sont responsables individuellement ou solidairement envers la société ou envers les tiers, soit des infractions aux dispositions législatives ou réglementaires applicables aux sociétés à responsabilité limitée, soit des violations des présents statuts, soit des fautes commises dans leur gestion.</p>'
+
+      + '<h2>Article 16 - Commissaire aux comptes</h2>'
+      + '<p>La nomination d\'un commissaire aux comptes devient obligatoire dès que la société dépasse deux des trois seuils suivants :</p>'
+      + '<p class="indent">– chiffre d\'affaires hors taxes supérieur ou égal à 3 100 000 euros ;<br>– total du bilan supérieur ou égal à 1 550 000 euros ;<br>– nombre moyen de salariés supérieur ou égal à 50.</p>'
+      + '<p>Les associés statuant à la majorité requise pour les décisions collectives ordinaires doivent désigner un ou plusieurs commissaires aux comptes titulaires et suppléants.</p>'
+      + '<p>Ils exercent leur mission de contrôle conformément à la loi. Les commissaires aux comptes sont désignés pour six exercices.</p>'
+
+      + '<div class="chapter">Chapitre V — Conventions entre un gérant ou un associé et la société</div>'
+
+      + '<h2>Article 17 - Conventions soumises à l\'approbation de l\'assemblée</h2>'
+      + '<p>Sous réserve des interdictions légales, toute convention conclue entre la société et l\'un de ses gérants ou associés, doit être soumise au contrôle de l\'assemblée des associés.</p>'
+      + '<p>Les dispositions du présent article s\'étendent aux conventions passées avec une société dont un associé indéfiniment responsable, gérant, administrateur, directeur général, membre du directoire ou membre du conseil de surveillance, est simultanément gérant ou associé de la société à responsabilité limitée.</p>'
+      + '<p>Ces dispositions ne sont pas applicables aux conventions portant sur des opérations courantes et conclues à des conditions normales.</p>'
+
+      + '<h2>Article 18 - Conventions interdites</h2>'
+      + '<p>A peine de nullité du contrat, il est interdit aux gérants ou associés autres que les personnes morales de contracter, sous quelque forme que ce soit, des emprunts auprès de la société, de se faire consentir par elle un découvert, en compte courant ou autrement, ainsi que de faire cautionner ou avaliser par elle leurs engagements envers les tiers. Cette interdiction s\'applique aux représentants légaux des personnes morales associées.</p>'
+      + '<p>Cette interdiction s\'applique également aux conjoints, ascendants et descendants des personnes visées à l\'alinéa 1er du présent article ainsi qu\'à toute personne interposée.</p>'
+
+      + '<h2>Article 19 - Comptes courants d\'associés</h2>'
+      + '<p>Chaque associé peut consentir des avances à la société sous forme de versements dans la caisse sociale. Les conditions de rémunération et de retrait de ces comptes courants sont fixées par acte séparé entre les intéressés et la gérance en conformité avec les dispositions de l\'article 17. Les comptes courants ne peuvent jamais être débiteurs.</p>'
+
       + '<div class="chapter">Chapitre VI — Décisions collectives</div>'
-      + '<h2>Article 20 – Décisions collectives</h2>'
-      + '<p>Les décisions collectives sont prises au choix de la gérance, en assemblée, par voie de consultation écrite des associés ou par consentement exprimé dans un acte. La réunion d\'une assemblée est obligatoire pour statuer sur l\'approbation annuelle des comptes.</p>'
-      + '<h2>Article 21 – Participation des associés aux décisions</h2>'
-      + '<p>Chaque associé a le droit de participer aux décisions collectives et dispose d\'un nombre de voix égal à celui des parts sociales qu\'il possède.</p>'
-      + '<h2>Article 22 – Approbation des comptes</h2>'
-      + '<p>Chaque année, il doit être réuni dans les six mois de la clôture de l\'exercice une Assemblée Générale appelée à statuer sur les comptes de l\'exercice écoulé.</p>'
-      + '<h2>Article 23 – Décisions collectives ordinaires</h2>'
-      + '<p>Les décisions collectives ordinaires doivent, pour être valables, être adoptées par un ou plusieurs associés représentant plus de la moitié des parts sociales.</p>'
-      + '<h2>Article 24 – Décisions collectives extraordinaires</h2>'
+
+      + '<h2>Article 20 - Décisions collectives</h2>'
+      + '<p>Les décisions de la collectivité des associés, à l\'exception de celles qui doivent être adoptées à l\'unanimité des associés par l\'effet de la loi, sont ordinaires ou extraordinaires.</p>'
+      + '<p>Outre les décisions nécessitant par l\'effet de la loi l\'unanimité des associés, la volonté des associés s\'exprime par des décisions collectives qui, régulièrement prises, obligent tous les associés.</p>'
+      + '<p>Les décisions collectives sont prises au choix de la gérance, en assemblée, par voie de consultation écrite des associés ou pourront résulter du consentement de tous les associés exprimés dans un acte. Toutefois, la réunion d\'une Assemblée est obligatoire pour statuer sur l\'approbation annuelle des comptes.</p>'
+      + '<p>L\'Assemblée est convoquée par la gérance ou à défaut par le commissaire aux comptes, s\'il en existe un, ou par un mandataire désigné en justice à la demande de tout associé. En cas de pluralité des gérants, chacun peut agir séparément. Pendant la liquidation, les assemblées sont convoquées par le ou les liquidateurs.</p>'
+      + '<p>Les assemblées sont réunies au lieu indiqué dans la convocation. La convocation est faite par lettre recommandée adressée à chacun des associés, quinze jours au moins avant la date de réunion. Celle-ci indique l\'ordre du jour.</p>'
+      + '<p>L\'Assemblée est présidée par le gérant ou l\'un des gérants. La délibération est constatée par un procès-verbal qui indique la date et le lieu de la réunion, les nom, prénoms et qualité du président, les noms et prénoms des associés présents ou représentés avec l\'indication du nombre de parts sociales détenues par chacun, les documents et rapports soumis à l\'assemblée, un résumé des débats, le texte des résolutions mises aux voix et le résultat des votes. Les procès-verbaux sont établis et signés par les gérants et, le cas échéant, par le président de séance.</p>'
+
+      + '<h2>Article 21 - Participation des associés aux décisions</h2>'
+      + '<p>Chaque associé a le droit de participer aux décisions collectives et dispose d\'un nombre de voix égal à celui des parts sociales qu\'il possède. Chaque associé peut se faire représenter aux Assemblées par un autre associé ou par son conjoint, sauf si les associés sont au nombre de deux ou si la société ne comprend que les deux époux. Dans ces deux derniers cas, chaque associé peut se faire représenter par toute personne de son choix.</p>'
+      + '<p>Les représentants légaux d\'associés juridiquement incapables peuvent participer au vote même s\'ils ne sont pas eux-mêmes associés.</p>'
+
+      + '<h2>Article 22 - Approbation des comptes</h2>'
+      + '<p>Chaque année, il doit être réuni dans les six mois de la clôture de l\'exercice une Assemblée Générale appelée à statuer sur les comptes de l\'exercice écoulé. Ce délai peut être prolongé par décision de justice.</p>'
+      + '<p>Les décisions sont adoptées dans les conditions prévues pour les décisions collectives ordinaires.</p>'
+
+      + '<h2>Article 23 - Décisions collectives ordinaires</h2>'
+      + '<p>Sont qualifiées d\'ordinaires les décisions des associés ne concernant ni l\'agrément de nouveaux associés, ni des modifications statutaires, sous réserve des exceptions prévues par la loi.</p>'
+      + '<p>Les décisions collectives ordinaires doivent, pour être valables, être adoptées par un ou plusieurs associés représentant plus de la moitié des parts sociales. Si cette majorité n\'est pas obtenue, les décisions sont, sur deuxième convocation, prises à la majorité des votes émis, quel que soit le nombre des votants.</p>'
+      + '<p>Toutefois, la majorité est irréductible, s\'il s\'agit de voter sur la nomination ou la révocation du gérant.</p>'
+
+      + '<h2>Article 24 - Décisions collectives extraordinaires</h2>'
+      + '<p>Sont qualifiées d\'extraordinaires les décisions des associés portant agrément de nouveaux associés ou modification des statuts, sous réserve des exceptions prévues par la loi.</p>'
       + '<p>Les modifications des statuts sont décidées à la majorité des deux tiers des parts détenues par les associés présents ou représentés. La décision n\'est valablement adoptée que si les associés présents ou représentés possèdent au moins, sur première convocation, le quart des parts et, sur deuxième convocation, le cinquième de celles-ci.</p>'
-      + '<h2>Article 25 – Consultations écrites</h2>'
-      + '<p>En cas de consultation écrite, les associés disposent d\'un délai minimal de quinze jours pour émettre leur vote. Tout associé n\'ayant pas répondu dans ce délai est considéré comme s\'étant abstenu.</p>'
+      + '<p>Toutefois :</p>'
+      + '<p class="indent">– le changement de nationalité de la société, l\'augmentation des engagements des associés ou la transformation de la société en nom collectif, en société en commandite simple ou par actions, ou en société par actions simplifiée, ne peuvent être décidés qu\'à l\'unanimité des associés ;<br>– les parts sociales ne peuvent être cédées à des tiers étrangers à la société ou nanties qu\'avec le consentement de la majorité des associés représentant au moins la moitié des parts sociales ;<br>– la transformation en société anonyme, sous réserve que les capitaux propres figurant au dernier bilan excèdent 750 000 euros, est décidée par les associés représentant plus de la moitié des parts sociales ;<br>– l\'augmentation de capital par incorporation de réserves ou de bénéfices est décidée par des associés représentant au moins la moitié des parts sociales ;<br>– le gérant peut mettre les statuts en harmonie avec les dispositions impératives de la loi et des règlements, sous réserve de ratification de ses décisions par une décision extraordinaire.</p>'
+
+      + '<h2>Article 25 - Consultations écrites - Décisions par acte</h2>'
+      + '<p>En cas de consultation écrite, le texte des résolutions proposées ainsi que les documents nécessaires à l\'information des associés sont adressés à chacun d\'eux par lettre recommandée avec demande d\'avis de réception. Les associés disposent d\'un délai minimal de quinze jours, à compter de la date de réception des projets de résolution pour émettre leur vote par écrit.</p>'
+      + '<p>La réponse doit être envoyée par lettre recommandée. Tout associé n\'ayant pas répondu dans le délai ci-dessus est considéré comme s\'étant abstenu.</p>'
+      + '<p>La consultation est mentionnée dans un procès-verbal, auquel est annexée la réponse de chaque associé.</p>'
+
       + '<div class="chapter">Chapitre VII — Affectation des résultats</div>'
-      + '<h2>Article 26 – Affectation des résultats et répartition des bénéfices</h2>'
-      + '<p>Après approbation des comptes et constatation de l\'existence d\'un bénéfice distribuable, il est prélevé 5 % pour constituer le fonds de réserve légale (ce prélèvement cesse d\'être obligatoire lorsque le fonds atteint le dixième du capital social). Le surplus est attribué aux associés sous forme de dividende proportionnellement au nombre de leurs parts sociales.</p>'
+
+      + '<h2>Article 26 - Affectation des résultats et répartition des bénéfices</h2>'
+      + '<p>Après approbation des comptes et constatation de l\'existence d\'un bénéfice distribuable, une fois prélevé 5 % pour constituer le fonds de réserve légale, l\'Assemblée Générale détermine, sur proposition de la gérance, toutes les sommes qu\'elle juge convenable de prélever sur ce bénéfice pour être reportées à nouveau sur l\'exercice suivant ou inscrites à un ou plusieurs fonds de réserves facultatifs ordinaires ou extraordinaires, généraux ou spéciaux, dont elle règle l\'affectation ou l\'emploi.</p>'
+      + '<p>Le surplus, s\'il en existe, est attribué aux associés sous forme de dividende.</p>'
+      + '<p>Le prélèvement de 5 % cesse d\'être obligatoire lorsque le fonds atteint le dixième du capital social.</p>'
+      + '<p>L\'Assemblée Générale peut décider en outre la mise en distribution de sommes prélevées sur les réserves. Dans ce cas, la décision indique expressément les postes de réserve sur lesquels les prélèvements sont effectués.</p>'
+      + '<p>Les sommes dont la mise en distribution est décidée sont réparties entre les associés gérants ou non gérants proportionnellement au nombre de leurs parts sociales.</p>'
+
       + '<div class="chapter">Chapitre VIII — Transformation · Dissolution</div>'
-      + '<h2>Article 27 – Transformation</h2>'
+
+      + '<h2>Article 27 - Transformation</h2>'
       + '<p>La société pourra se transformer en société commerciale de toute autre forme, sans que cette opération n\'entraîne la création d\'un être moral nouveau.</p>'
-      + '<h2>Article 28 – Dissolution</h2>'
-      + '<p>À l\'expiration de la société ou en cas de dissolution anticipée, une décision des associés nomme un ou plusieurs liquidateurs dont elle détermine les pouvoirs.</p>'
-      + '<h2>Article 29 – Capitaux propres inférieurs à la moitié du capital social</h2>'
-      + '<p>Si, du fait des pertes constatées, les capitaux propres de la société deviennent inférieurs à la moitié du capital social, la gérance doit, dans les quatre mois qui suivent l\'approbation des comptes, consulter les associés afin de décider s\'il y a lieu ou non à dissolution anticipée.</p>'
-      + '<h2>Article 30 – Contestations</h2>'
-      + '<p>Toutes contestations pouvant s\'élever au cours de la société ou de sa liquidation seront de la compétence exclusive des tribunaux dans le ressort desquels est établi le siège social de la société.</p>'
-      + '<div class="chapter">Chapitre IX — Constitution · Pouvoirs</div>'
-      + '<h2>Article 31 – Jouissance de la personnalité morale</h2>'
-      + '<p>La société jouira de la personnalité morale à dater de son immatriculation au Registre du Commerce et des Sociétés. Les associés approuvent les actes accomplis avant ce jour pour le compte de la société en formation.</p>'
-      + '<h2>Article 32 – Pouvoirs</h2>'
+
+      + '<h2>Article 28 - Dissolution</h2>'
+      + '<p>A l\'expiration de la société, sauf prorogation de celle-ci ou en cas de dissolution anticipée, une décision des associés nomme un ou plusieurs liquidateurs dont elle détermine les pouvoirs et qui exercent leurs fonctions conformément à la loi.</p>'
+
+      + '<h2>Article 29 - Capitaux propres inférieurs à la moitié du capital social</h2>'
+      + '<p>Si, du fait des pertes constatées, les capitaux propres de la société deviennent inférieurs à la moitié du capital social, la gérance doit, dans les quatre mois qui suivent l\'approbation des comptes ayant fait apparaître cette perte, consulter les associés afin de décider, s\'il y a lieu ou non à dissolution anticipée de la société.</p>'
+      + '<p>L\'Assemblée délibère aux conditions de majorité prévues pour les décisions collectives extraordinaires.</p>'
+      + '<p>Si la dissolution n\'est pas prononcée, le capital doit, avant la fin du second exercice suivant celui au cours duquel la constatation des pertes est intervenue, être réduit d\'un montant au moins égal au montant des pertes qui n\'ont pu être imputées sur les réserves si, dans ce délai, les capitaux propres n\'ont pas été reconstitués à un montant au moins égal à la moitié du capital social.</p>'
+      + '<p>Si la dissolution n\'est pas prononcée à la majorité exigée pour la modification des statuts, la société est tenue, au plus tard à la clôture du deuxième exercice suivant celui au cours duquel la constatation des pertes est intervenue, de reconstituer ses capitaux propres à concurrence d\'une valeur au moins égale à la moitié du capital social.</p>'
+      + '<p>La société qui n\'a pas reconstitué ses capitaux propres à concurrence de la moitié de son capital social dans le délai de 2 ans dispose d\'un nouveau délai de 2 ans pour réduire son capital social jusqu\'à un seuil minimal. A l\'issue de cette réduction, le capital social doit être inférieur ou égal à 1 % du total du bilan du dernier exercice social.</p>'
+      + '<p>A défaut de respect des dispositions ci-dessus, tout intéressé peut demander en justice la dissolution de la société.</p>'
+
+      + '<h2>Article 30 - Contestations</h2>'
+      + '<p>Toutes contestations pouvant s\'élever au cours de la société ou de sa liquidation entre les associés et la société, ou entre associés eux-mêmes concernant les affaires sociales, l\'interprétation ou l\'application des statuts seront de la compétence exclusive des tribunaux dans le ressort desquels est établi le siège social de la société.</p>'
+
+      + '<div class="chapter">Chapitre IX — Jouissance de la personnalité morale · Pouvoirs</div>'
+
+      + '<h2>Article 31 - Jouissance de la personnalité morale</h2>'
+      + '<p>La société jouira de la personnalité morale à dater de son immatriculation au Registre du Commerce et des Sociétés ou au Registre National des Entreprises.</p>'
+      + '<p>Les associés approuvent les actes accomplis avant ce jour pour le compte de la société en formation, lesquels sont relatés dans un état ci-annexé.</p>'
+      + '<p>Toutes ces opérations et engagements seront réputés avoir été faits et souscrits dès l\'origine par la société qui les reprendra à son compte par le seul fait de son immatriculation au RCS ou RNE.</p>'
+      + '<p>La gérance est par ailleurs expressément habilitée entre la signature des statuts et l\'immatriculation au RCS ou RNE à passer tous actes et à souscrire tous engagements entrant dans l\'objet social et conformes aux intérêts de la société.</p>'
+      + '<p>Ces engagements seront réputés avoir été dès l\'origine souscrits par la société après vérification et approbation par l\'Assemblée Générale Ordinaire des associés tenue au plus tard lors de l\'approbation des comptes du premier exercice social.</p>'
+      + '<p>La gérance est expressément mandatée pour accomplir, au nom de la Société en formation, les engagements suivants :</p>'
+      + '<p class="indent">– Dépôt du capital social auprès de <span class="bold">' + banque + '</span> ;<br>– Ouverture d\'un compte courant au nom de la Société ;<br>– Frais <span class="bold">MY ADMIN SXM</span> relatifs à la création de la Société ;<br>– Toutes démarches nécessaires à l\'immatriculation de la Société au Registre du Commerce et des Sociétés.</p>'
+
+      + '<h2>Article 32 - Pouvoirs</h2>'
       + '<p>Tous pouvoirs sont donnés au gérant ou à son mandataire à l\'effet d\'accomplir toutes formalités de publicité prescrites par la loi.</p>'
-      + '<div class="sig-section"><p>Fait à Saint-Martin, le ' + date + '</p><p>en ' + allAssocies.length + ' exemplaires originaux</p>'
-      + '<div class="sig-grid">' + signatures + '</div></div>';
+
+      + '<div class="sig-section">'
+      + '<p>Fait à Saint-Martin (97150), le ' + date + '</p>'
+      + '<p>en ___ exemplaires originaux</p>'
+      + '<br>'
+      + '<div class="sig-grid">' + sigsHTML + '</div>'
+      + '</div>';
+
+    const txtContent = denomination + '\nSociété à responsabilité limitée\nAu capital de ' + capitalStr + '\nSiège social : ' + siege + '\nEn cours d&#39;immatriculation\n\n\nSTATUTS\n\n\nLES SOUSSIGNÉS,\n\n' + soussignesText + '\n\nOnt établi ainsi qu\'il suit les statuts de la société à responsabilité limitée devant exister entre eux.\n\n[... texte intégral des statuts ...]';
+
+    const winSARL = window.open('', '_blank');
+    winSARL.document.write('<!DOCTYPE html><html lang="fr"><head>'
+      + '<meta charset="UTF-8">'
+      + '<title>Statuts SARL — ' + denomination + '</title>'
+      + '<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">'
+      + '<style>' + css + coverCSS + '</style>'
+      + '</head><body>'
+      + '<div class="toolbar">'
+      + '<span class="toolbar-title">Statuts SARL · ' + denomination + '</span>'
+      + '<button class="btn btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>'
+      + '<button class="btn btn-copy" style="background:#3B82F6;color:white;" onclick="'
+      + 'const b=new Blob([document.getElementById(\'tc\').value],{type:\'text/plain;charset=utf-8\'});'
+      + 'const a=document.createElement(\'a\');a.href=URL.createObjectURL(b);'
+      + 'a.download=\'Statuts_SARL_' + denomination.replace(/\s+/g,'_') + '.txt\';a.click();">'
+      + '📄 Télécharger .txt</button>'
+      + '</div>'
+      + '<textarea id="tc" style="display:none">' + txtContent + '</textarea>'
+      + '<div style="height:46px"></div>'
+      + coverHTML
+      + '<div class="wrap">' + bodyHTML + '</div>'
+      + '</body></html>');
+    winSARL.document.close();
+    return;
+  }
+
+  else if (type === 'statuts_eurl') {
+    const soussignesHTML = '<p><span class="bold">' + nomComplet + '</span>, demeurant à <span class="bold">' + adresse + '</span>, né(e) le <span class="bold">' + ddn + '</span> à <span class="bold">' + lieu + '</span>, de nationalité <span class="bold">' + nationalite + '</span>, ' + (matrimonial||'') + ',</p>';
+
+    const coverCSS = `
+      .cover-page{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:90vh;text-align:center;padding:60px;}
+      .cover-denom{font-family:'Inter',sans-serif;font-size:20pt;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#1A2E4A;margin-bottom:16px;}
+      .cover-line{border:none;border-top:1.5px solid #1A2E4A;width:320px;margin:0 auto 24px;}
+      .cover-info{font-family:'EB Garamond',Georgia,serif;font-size:12pt;color:#444;line-height:2.2;margin-bottom:40px;}
+      .cover-title{font-family:'Inter',sans-serif;font-size:14pt;font-weight:600;letter-spacing:0.35em;text-transform:uppercase;color:#1a1a1a;margin-top:20px;}
+      @media print{.cover-page{page-break-after:always;}@page{margin:2.5cm 2cm;}h2{page-break-after:avoid;}}
+    `;
+
+    const coverHTML = '<div class="cover-page">'
+      + '<div class="cover-denom">' + denomination + '</div>'
+      + '<hr class="cover-line">'
+      + '<div class="cover-info">'
+      + 'Société à responsabilité limitée unipersonnelle<br>'
+      + 'Au capital de ' + capitalStr + '<br>'
+      + 'Siège social : ' + siege + '<br>'
+      + '<em>En cours d&#39;immatriculation</em>'
+      + '</div>'
+      + '<div class="cover-title">Statuts constitutifs</div>'
+      + '</div>';
+
+    const bodyHTML = ''
+      + '<h2>La soussignée :</h2>'
+      + soussignesHTML
+      + '<p>A arrêté ainsi qu\'il suit les statuts d\'une Société à responsabilité limitée unipersonnelle qu\'elle a décidé de constituer.</p>'
+
+      + '<div class="chapter">Chapitre I — Forme · Objet · Dénomination · Siège · Exercice social · Durée</div>'
+
+      + '<h2>Article 1 - Forme juridique</h2>'
+      + '<p>Il est formé par l\'associé unique, soussigné(e), propriétaire des parts sociales ci-après créées, une Société à Responsabilité Limitée régie par les articles L223-1 et suivants du Code de commerce, ainsi que par les présents statuts.</p>'
+
+      + '<h2>Article 2 - Objet social</h2>'
+      + '<p>La Société a pour objet en France et à l\'étranger :</p>'
+      + '<p class="indent">• ' + objet.replace(/\n/g, '<br>• ') + ' ;</p>'
+      + (d.activite_secondaire ? '<p class="indent">• ' + d.activite_secondaire + ' ;</p>' : '')
+      + '<p class="indent">• Et, plus généralement, toutes opérations industrielles, commerciales, financières, mobilières ou immobilières, se rapportant directement ou indirectement à l\'objet social ou susceptibles d\'en faciliter l\'extension ou le développement.</p>'
+
+      + '<h2>Article 3 - Dénomination sociale</h2>'
+      + '<p>La dénomination de la Société est : <span class="bold">' + denomination + '</span>' + (sigle ? '<br>Et pour sigle : <span class="bold">' + sigle + '</span>' : '') + '</p>'
+      + '<p>Dans tous les actes, factures, annonces, publications et autres documents émanant de la Société, la dénomination sociale doit toujours être précédée ou suivie des mots « Société à responsabilité limitée » ou des initiales « SARL » et de l\'indication du montant du capital social.</p>'
+
+      + '<h2>Article 4 - Siège social</h2>'
+      + '<p>Le siège social est fixé au : <span class="bold">' + siege + '</span></p>'
+      + '<p>Il pourra être transféré en tout autre endroit du même département par simple décision du gérant, sous réserve de ratification par l\'associé unique, et en tout autre lieu suivant décision de l\'associé unique.</p>'
+
+      + '<h2>Article 5 - Exercice social</h2>'
+      + '<p>Chaque exercice social a une durée d\'une année qui commence le <span class="bold">1er janvier</span> et finit le <span class="bold">' + cloture + '</span> de chaque année.</p>'
+      + '<p>Par exception, le premier exercice sera clôturé le <span class="bold">' + cloture + ' ' + anneeCloture + '</span>.</p>'
+
+      + '<h2>Article 6 - Durée</h2>'
+      + '<p>La durée de la Société est fixée à <span class="bold">' + duree + '</span> à compter de la date de son immatriculation au Registre du Commerce et des Sociétés, sauf dissolution anticipée ou prorogation.</p>'
+
+      + '<div class="chapter">Chapitre II — Apports · Capital social</div>'
+
+      + '<h2>Article 7 - Apports</h2>'
+      + '<p style="font-weight:600;font-size:10.5pt;">Apports en numéraire</p>'
+      + '<p><span class="bold">' + nomComplet + '</span> apporte à la Société une somme totale de <span class="bold">' + capitalStr + '</span> correspondant à <span class="bold">' + nbParts + ' parts sociales</span> de <span class="bold">' + valNom + ' euro(s)</span> de valeur nominale chacune, entièrement souscrites et intégralement libérées.</p>'
+      + '<p>Laquelle somme de <span class="bold">' + capitalStr + '</span> a été régulièrement déposée sur un compte ouvert au nom de la Société en formation, le <span class="bold">' + dateDepot + '</span> à la banque <span class="bold">' + banque + '</span>.</p>'
+
+      + '<h2>Article 8 - Capital social</h2>'
+      + '<p>Le capital social est fixé à la somme de <span class="bold">' + capitalStr + '</span>.</p>'
+      + '<p>Il est divisé en <span class="bold">' + nbParts + ' parts</span> de <span class="bold">' + valNom + ' euro(s)</span> chacune, entièrement libérées, souscrites en totalité par l\'associé unique :</p>'
+      + '<p class="indent"><span class="bold">' + nomComplet + '</span> ...................................................... <span class="bold">' + nbParts + ' parts</span></p>'
+      + '<p>L\'associé unique déclare expressément que ces parts sociales lui ont été attribuées en totalité.</p>'
+
+      + '<div class="chapter">Chapitre III — Parts sociales</div>'
+
+      + '<h2>Article 9 - Droits et obligations attachés aux parts sociales</h2>'
+      + '<p>Chaque part sociale donne droit à une voix dans tous les votes et délibérations et confère à son propriétaire un droit égal dans les bénéfices de la société et dans tout l\'actif social.</p>'
+      + '<p>La propriété d\'une part emporte de plein droit adhésion aux statuts de la société et aux décisions adoptées dans le cadre de ladite société.</p>'
+
+      + '<h2>Article 10 - Transmissions des parts sociales</h2>'
+      + '<p>Les transmissions de parts sociales consenties par l\'associé unique sont libres. Elles sont constatées par un acte sous seing privé ou par un acte notarié, et font l\'objet d\'un dépôt au greffe du tribunal.</p>'
+
+      + '<h2>Article 11 - Réunion de toutes les parts en une seule main</h2>'
+      + '<p>La réunion de toutes les parts en une seule main n\'entraîne pas la dissolution de la société qui continue d\'exister avec un associé unique. L\'associé unique exerce alors tous les pouvoirs dévolus à l\'Assemblée des associés.</p>'
+
+      + '<div class="chapter">Chapitre IV — Gérance · Contrôle</div>'
+
+      + '<h2>Article 12 - Gérance</h2>'
+      + '<p>La Société est représentée, dirigée et administrée par un ou plusieurs gérants, personnes physiques, associés ou non associés de la Société, désignés par l\'associé unique.</p>'
+      + '<p>En rémunération de ses fonctions et en compensation de la responsabilité attachée à la gestion, chaque gérant a droit à une rémunération fixe, proportionnelle ou mixte, dont le montant et les modalités de paiement sont déterminés par décision de l\'associé unique.</p>'
+
+      + '<h2>Article 13 - Pouvoirs et responsabilité de la gérance</h2>'
+      + '<p>Dans ses rapports avec l\'associé unique, la gérance engage la société par les actes entrant dans l\'objet social. Ses pouvoirs peuvent être limités dans l\'acte de nomination.</p>'
+      + '<p>Dans les rapports avec les tiers de bonne foi, la société est engagée, même par les actes du gérant qui ne relèvent pas de l\'objet social.</p>'
+      + '<p>Le gérant ne pourra se porter, au nom de la société, caution solidaire ou aval au profit d\'un tiers, sans l\'agrément préalable de l\'associé unique.</p>'
+      + '<p>Le ou les gérants peuvent, sous leur responsabilité, constituer des mandataires pour un ou plusieurs objets déterminés.</p>'
+      + '<p>Le ou les gérants sont responsables individuellement ou solidairement envers la société ou envers les tiers, soit des infractions aux dispositions législatives ou réglementaires applicables aux SARL, soit des violations des présents statuts, soit des fautes commises dans leur gestion.</p>'
+
+      + '<h2>Article 14 - Commissaire aux comptes</h2>'
+      + '<p>La nomination d\'un commissaire aux comptes devient obligatoire dès que la société dépasse deux des trois seuils suivants :</p>'
+      + '<p class="indent">– chiffre d\'affaires hors taxes supérieur ou égal à 3 100 000 euros ;<br>– total du bilan supérieur ou égal à 1 550 000 euros ;<br>– nombre moyen de salariés supérieur ou égal à 50.</p>'
+      + '<p>L\'associé unique doit alors désigner un ou plusieurs commissaires aux comptes titulaires et suppléants pour six exercices.</p>'
+
+      + '<div class="chapter">Chapitre V — Conventions</div>'
+
+      + '<h2>Article 15 - Conventions soumises à l\'approbation</h2>'
+      + '<p>Sous réserve des interdictions légales, toute convention conclue entre la société et son gérant ou associé unique, doit être mentionnée dans le registre des décisions.</p>'
+      + '<p>Ces dispositions ne sont pas applicables aux conventions portant sur des opérations courantes et conclues à des conditions normales.</p>'
+
+      + '<h2>Article 16 - Conventions interdites</h2>'
+      + '<p>A peine de nullité du contrat, il est interdit au gérant ou à l\'associé unique de contracter, sous quelque forme que ce soit, des emprunts auprès de la société, de se faire consentir par elle un découvert, ainsi que de faire cautionner ou avaliser par elle leurs engagements envers les tiers.</p>'
+
+      + '<h2>Article 17 - Comptes courants</h2>'
+      + '<p>L\'associé unique peut consentir des avances à la société sous forme de versements dans la caisse sociale. Les conditions de rémunération et de retrait de ces comptes courants sont fixées par acte séparé. Les comptes courants ne peuvent jamais être débiteurs.</p>'
+
+      + '<div class="chapter">Chapitre VI — Décisions de l\'associé unique</div>'
+
+      + '<h2>Article 18 - Décisions de l\'associé unique</h2>'
+      + '<p>L\'associé unique exerce les pouvoirs qui sont dévolus par la loi aux associés réunis en assemblée générale. L\'associé unique ne peut pas déléguer ses pouvoirs.</p>'
+      + '<p>Les décisions unilatérales de l\'associé unique sont répertoriées dans un registre coté et paraphé tenu au siège social.</p>'
+
+      + '<h2>Article 19 - Approbation des comptes</h2>'
+      + '<p>Chaque année, dans les six mois de la clôture de l\'exercice, l\'associé unique doit statuer sur les comptes de l\'exercice écoulé. Ce délai peut être prolongé par décision de justice.</p>'
+
+      + '<div class="chapter">Chapitre VII — Affectation des résultats</div>'
+
+      + '<h2>Article 20 - Affectation des résultats et répartition des bénéfices</h2>'
+      + '<p>Après approbation des comptes et constatation de l\'existence d\'un bénéfice distribuable, une fois prélevé 5 % pour constituer le fonds de réserve légale, l\'associé unique détermine les sommes à reporter à nouveau sur l\'exercice suivant ou à inscrire à un ou plusieurs fonds de réserves.</p>'
+      + '<p>Le surplus, s\'il en existe, est attribué à l\'associé unique sous forme de dividende.</p>'
+      + '<p>Le prélèvement de 5 % cesse d\'être obligatoire lorsque le fonds atteint le dixième du capital social.</p>'
+
+      + '<div class="chapter">Chapitre VIII — Transformation · Dissolution</div>'
+
+      + '<h2>Article 21 - Transformation</h2>'
+      + '<p>La société pourra se transformer en société commerciale de toute autre forme, sans que cette opération n\'entraîne la création d\'un être moral nouveau.</p>'
+
+      + '<h2>Article 22 - Dissolution</h2>'
+      + '<p>A l\'expiration de la société, sauf prorogation de celle-ci ou en cas de dissolution anticipée, l\'associé unique nomme un ou plusieurs liquidateurs dont il détermine les pouvoirs et qui exercent leurs fonctions conformément à la loi.</p>'
+
+      + '<h2>Article 23 - Capitaux propres inférieurs à la moitié du capital social</h2>'
+      + '<p>Si, du fait des pertes constatées, les capitaux propres de la société deviennent inférieurs à la moitié du capital social, la gérance doit, dans les quatre mois qui suivent l\'approbation des comptes ayant fait apparaître cette perte, consulter l\'associé unique afin de décider s\'il y a lieu ou non à dissolution anticipée.</p>'
+      + '<p>Si la dissolution n\'est pas prononcée, le capital doit, avant la fin du second exercice suivant celui au cours duquel la constatation des pertes est intervenue, être réduit d\'un montant au moins égal au montant des pertes qui n\'ont pu être imputées sur les réserves, si dans ce délai les capitaux propres n\'ont pas été reconstitués à un montant au moins égal à la moitié du capital social.</p>'
+      + '<p>La société qui n\'a pas reconstitué ses capitaux propres à concurrence de la moitié de son capital social dans le délai de 2 ans dispose d\'un nouveau délai de 2 ans pour réduire son capital social jusqu\'à un seuil minimal. A l\'issue de cette réduction, le capital social doit être inférieur ou égal à 1 % du total du bilan du dernier exercice social.</p>'
+      + '<p>A défaut de respect des dispositions ci-dessus, tout intéressé peut demander en justice la dissolution de la société.</p>'
+
+      + '<h2>Article 24 - Contestations</h2>'
+      + '<p>Toutes contestations pouvant s\'élever au cours de la société ou de sa liquidation entre la société et son associé unique, concernant les affaires sociales, l\'interprétation ou l\'application des statuts seront de la compétence exclusive des tribunaux dans le ressort desquels est établi le siège social de la société.</p>'
+
+      + '<div class="chapter">Chapitre IX — Jouissance de la personnalité morale · Pouvoirs</div>'
+
+      + '<h2>Article 25 - Jouissance de la personnalité morale</h2>'
+      + '<p>La société jouira de la personnalité morale à dater de son immatriculation au Registre du Commerce et des Sociétés ou au Registre National des Entreprises.</p>'
+      + '<p>L\'associé unique approuve les actes accomplis avant ce jour pour le compte de la société en formation.</p>'
+      + '<p>Toutes ces opérations et engagements seront réputés avoir été faits et souscrits dès l\'origine par la société qui les reprendra à son compte par le seul fait de son immatriculation au RCS ou RNE.</p>'
+      + '<p>La gérance est expressément habilitée entre la signature des statuts et l\'immatriculation au RCS ou RNE à passer tous actes et à souscrire tous engagements entrant dans l\'objet social et conformes aux intérêts de la société, notamment :</p>'
+      + '<p class="indent">– Dépôt du capital social auprès de <span class="bold">' + banque + '</span> ;<br>– Ouverture d\'un compte courant au nom de la Société ;<br>– Frais <span class="bold">MY ADMIN SXM</span> relatifs à la création de la Société ;<br>– Toutes démarches nécessaires à l\'immatriculation de la Société au Registre du Commerce et des Sociétés.</p>'
+      + '<p>Ces engagements seront réputés avoir été dès l\'origine souscrits par la société après vérification et approbation par l\'associé unique lors de l\'approbation des comptes du premier exercice social.</p>'
+
+      + '<h2>Article 26 - Option fiscale</h2>'
+      + '<p>Conformément aux dispositions légales en vigueur, l\'associé unique déclare opter pour l\'imposition à l\'<span class="bold">Impôt sur les ' + (optionFiscale==='IR'?'Revenus (IR)':'Sociétés (IS)') + '</span>.</p>'
+
+      + '<h2>Article 27 - Pouvoirs</h2>'
+      + '<p>Tous pouvoirs sont donnés au gérant ou à son mandataire à l\'effet d\'accomplir toutes formalités de publicité prescrites par la loi.</p>'
+
+      + '<div class="sig-section">'
+      + '<p>Fait à Saint-Martin (97150), le ' + date + '</p>'
+      + '<p>en ___ exemplaires originaux</p>'
+      + '<br>'
+      + '<div class="sig-block"><p class="sig-name">' + nomComplet + '</p><p class="sig-role">Associé(e) unique et ' + qualite + '</p><div class="sig-line"></div><p class="sig-note">Signature précédée de la mention manuscrite « Lu et approuvé »</p></div>'
+      + '</div>';
+
+    const winEURL = window.open('', '_blank');
+    winEURL.document.write('<!DOCTYPE html><html lang="fr"><head>'
+      + '<meta charset="UTF-8">'
+      + '<title>Statuts EURL — ' + denomination + '</title>'
+      + '<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">'
+      + '<style>' + css + coverCSS + '</style>'
+      + '</head><body>'
+      + '<div class="toolbar">'
+      + '<span class="toolbar-title">Statuts EURL · ' + denomination + '</span>'
+      + '<button class="btn btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>'
+      + '<button class="btn btn-copy" style="background:#3B82F6;color:white;" onclick="'
+      + 'const b=new Blob([document.querySelector(\'.wrap\').innerText],{type:\'text/plain;charset=utf-8\'});'
+      + 'const a=document.createElement(\'a\');a.href=URL.createObjectURL(b);'
+      + 'a.download=\'Statuts_EURL_' + denomination.replace(/\s+/g,'_') + '.txt\';a.click();">'
+      + '📄 Télécharger .txt</button>'
+      + '</div>'
+      + '<div style="height:46px"></div>'
+      + coverHTML
+      + '<div class="wrap">' + bodyHTML + '</div>'
+      + '</body></html>');
+    winEURL.document.close();
+    return;
   }
 
   else if (type === 'statuts_sas') {
@@ -1903,7 +2188,7 @@ function openDoc(d,type) {
       + formeSAS + '\n'
       + 'Au capital de ' + capitalStr + '\n'
       + 'Siège social : ' + siege + '\n'
-      + 'En cours d\'immatriculation\n\n'
+      + 'En cours d&#39;immatriculation\n\n'
       + 'STATUTS\n\n'
       + 'Les soussignés,\n'
       + allAssocies.map(function(a,i){
@@ -1952,7 +2237,7 @@ function openDoc(d,type) {
     const toolbarHTML = '<div class="toolbar">'
       + '<span class="toolbar-title">Statuts ' + sigleSAS + ' · ' + denomination + '</span>'
       + '<button class="btn btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>'
-      + '<button class="btn btn-copy" style="background:#c8b89a;color:#1a1a1a;" onclick="downloadTxt()">📄 Télécharger .txt</button>'
+      + '<button class="btn btn-copy" style="background:#3B82F6;color:white;" onclick="generateDocx()">📄 Télécharger .docx</button>'
       + '</div><div style="height:46px"></div>';
 
     const coverPage = '<div class="cover-page">'
@@ -1962,7 +2247,7 @@ function openDoc(d,type) {
       + formeSAS + '<br>'
       + 'Au capital de ' + capitalStr + '<br>'
       + 'Siège social : ' + siege + '<br>'
-      + 'En cours d\'immatriculation'
+      + 'En cours d&#39;immatriculation'
       + '</div>'
       + '<div class="cover-title">Statuts</div>'
       + '</div>';
@@ -2347,15 +2632,60 @@ function openDoc(d,type) {
       + '<meta charset="UTF-8">'
       + '<title>Statuts ' + sigleSAS + ' — ' + denomination + '</title>'
       + '<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">'
+      + '<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"><\/script>'
       + '<style>' + statsCss + '</style>'
       + '</head><body>'
       + toolbarHTML
       + bodyContent
-      + '<script>function downloadTxt(){'
-      + 'const blob=new Blob([' + JSON.stringify(txtContent) + '],{type:"text/plain;charset=utf-8"});'
-      + 'const a=document.createElement("a");a.href=URL.createObjectURL(blob);'
-      + 'a.download="Statuts_' + sigleSAS + '_' + denomination.replace(/[^a-zA-Z0-9]/g,"_") + '.txt";'
-      + 'a.click();}<\/script>'
+      + '<script>'
+      + 'const _txt=' + JSON.stringify(txtContent) + ';'
+      + 'const _den=' + JSON.stringify(denomination) + ';'
+      + 'const _sig=' + JSON.stringify(sigleSAS) + ';'
+      + 'async function generateDocx(){'
+      + '  try{'
+      + '  const {Document,Packer,Paragraph,TextRun,AlignmentType,HeadingLevel,PageBreak,BorderStyle}=docx;'
+      + '  const lines=_txt.split("\\n");'
+      + '  const paras=[];'
+      + '  const isSect=l=>/^(I\\.|II\\.|III\\.|IV\\.|V\\.|VI\\.|VII\\.|VIII\\.)[\\s–\\-]/.test(l.trim());'
+      + '  const isArt=l=>/^Article \\d+/i.test(l.trim());'
+      + '  const isSub=l=>/^\\d+\\.\\d+\\./.test(l.trim());'
+      + '  const isBul=l=>/^[–•\\-]/.test(l.trim());'
+      + '  // Page de couverture'
+      + '  paras.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:3000,after:160},children:[new TextRun({text:lines[0]||_den,bold:true,size:40,font:"Calibri",color:"1A2E4A"})]}));'
+      + '  paras.push(new Paragraph({alignment:AlignmentType.CENTER,border:{bottom:{style:BorderStyle.SINGLE,size:6,color:"1A2E4A",space:1}},spacing:{after:240},children:[]}));'
+      + '  [1,2,3,4].forEach(i=>{if(lines[i])paras.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:80,after:80},children:[new TextRun({text:lines[i],size:22,font:"Calibri",color:"444444",italics:i===4})]}));});'
+      + '  paras.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:800,after:0},children:[new TextRun({text:"STATUTS",bold:true,size:36,font:"Calibri",characterSpacing:300})]}));'
+      + '  paras.push(new Paragraph({pageBreakBefore:true,children:[]}));'
+      + '  // Corps'
+      + '  for(let i=6;i<lines.length;i++){'
+      + '    const l=lines[i];'
+      + '    if(!l.trim()){paras.push(new Paragraph({spacing:{before:60,after:60},children:[]}));continue;}'
+      + '    if(isSect(l)){paras.push(new Paragraph({spacing:{before:480,after:160},border:{bottom:{style:BorderStyle.SINGLE,size:4,color:"CCCCCC",space:1}},children:[new TextRun({text:l,bold:true,size:20,font:"Calibri",allCaps:true,color:"555555"})]}));}'
+      + '    else if(isArt(l)){paras.push(new Paragraph({heading:HeadingLevel.HEADING_2,spacing:{before:400,after:120},children:[new TextRun({text:l,bold:true,size:24,font:"Calibri",allCaps:true})]}));}'
+      + '    else if(isSub(l)){paras.push(new Paragraph({spacing:{before:200,after:80},children:[new TextRun({text:l,bold:true,size:22,font:"Calibri"})]}));}'
+      + '    else if(isBul(l)){paras.push(new Paragraph({indent:{left:720},spacing:{before:40,after:40},children:[new TextRun({text:l,size:22,font:"Calibri"})]}));}'
+      + '    else if(/^Fait à/.test(l)){paras.push(new Paragraph({spacing:{before:600,after:80},children:[new TextRun({text:l,size:22,font:"Calibri"})]}));}'
+      + '    else if(/^En ___/.test(l)){paras.push(new Paragraph({spacing:{before:80,after:400},children:[new TextRun({text:l,size:22,font:"Calibri"})]}));}'
+      + '    else if(/^Bon pour|^Signature précédée/.test(l)){paras.push(new Paragraph({spacing:{before:40,after:40},children:[new TextRun({text:l,size:20,font:"Calibri",italics:true,color:"666666"})]}));}'
+      + '    else if(/^_{3,}/.test(l)){paras.push(new Paragraph({spacing:{before:160,after:40},border:{bottom:{style:BorderStyle.SINGLE,size:4,color:"AAAAAA",space:1}},children:[]}));}'
+      + '    else{paras.push(new Paragraph({alignment:AlignmentType.JUSTIFIED,spacing:{before:60,after:60},children:[new TextRun({text:l,size:22,font:"Calibri"})]}));}'
+      + '  }'
+      + '  const doc=new Document({'
+      + '    styles:{default:{document:{run:{font:"Calibri",size:22}}},'
+      + '    paragraphStyles:[{id:"Heading2",name:"Heading 2",basedOn:"Normal",next:"Normal",quickFormat:true,'
+      + '      run:{size:24,bold:true,font:"Calibri"},paragraph:{spacing:{before:400,after:120},outlineLevel:1}}]'
+      + '    },'
+      + '    sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1418,right:1134,bottom:1418,left:1134}}},'
+      + '    children:paras}]'
+      + '  });'
+      + '  const blob=await Packer.toBlob(doc);'
+      + '  const a=document.createElement("a");'
+      + '  a.href=URL.createObjectURL(blob);'
+      + '  a.download="Statuts_"+_sig+"_"+_den.replace(/[^a-zA-Z0-9]/g,"_")+".docx";'
+      + '  a.click();'
+      + '  }catch(e){alert("Erreur génération DOCX: "+e.message);}'
+      + '}'
+      + '<\/script>'
       + '</body></html>');
     win.document.close();
     return;
@@ -2363,49 +2693,44 @@ function openDoc(d,type) {
 
 
   else if (type === 'statuts_sasu') {
-    html = '<div class="doc-header"><div class="soc-name">' + denomination + '</div>'
-      + '<div class="soc-info">Société par actions simplifiée unipersonnelle<br>Au capital de ' + capitalStr + '<br>Siège social : ' + siege + '</div></div>'
-      + '<div class="doc-title">Statuts</div><hr>'
-      + '<h2>L\'associé unique :</h2>'
-      + '<p><span class="bold">' + nomComplet + '</span>, demeurant à <span class="bold">' + adresse + '</span>, né(e) le <span class="bold">' + ddn + '</span> à <span class="bold">' + lieu + '</span>, de nationalité <span class="bold">' + nationalite + '</span>, ' + matrimonial + ',</p>'
-      + '<p>A arrêté ainsi qu\'il suit les statuts d\'une Société par actions simplifiée unipersonnelle.</p>'
-      + '<div class="chapter">Article 1 — Forme</div><p>SASU régie par les dispositions législatives et réglementaires en vigueur et par les présents statuts.</p>'
-      + '<div class="chapter">Article 2 — Objet</div>'
-      + '<p>' + objet + (d.activite_secondaire ? '<br><br>' + d.activite_secondaire : '') + '</p>'
-      + '<div class="chapter">Article 3 — Dénomination sociale</div>'
-      + '<p><span class="bold">' + denomination + '</span>' + (sigle ? ' — Sigle : <span class="bold">' + sigle + '</span>' : '') + '</p>'
-      + '<div class="chapter">Article 4 — Siège social</div>'
-      + '<p><span class="bold">' + siege + '</span>. Il peut être transféré en tout autre endroit par décision du Président.</p>'
-      + '<div class="chapter">Article 5 — Durée</div>'
-      + '<p><span class="bold">' + duree + '</span> à compter de son immatriculation au RCS.</p>'
-      + '<div class="chapter">Article 6 — Apports et capital social</div>'
-      + '<p><span class="bold">' + nomComplet + '</span> apporte à la Société la somme en numéraire de <span class="bold">' + capitalStr + '</span> correspondant à <span class="bold">' + nbParts + ' actions</span> de <span class="bold">' + valNom + ' euros</span> de valeur nominale chacune, souscrites en totalité et intégralement libérées.</p>'
-      + '<p>Le capital social est fixé à <span class="bold">' + capitalStr + '</span>, divisé en <span class="bold">' + nbParts + ' actions</span> de <span class="bold">' + valNom + ' euros</span> chacune.</p>'
-      + '<p>La somme de <span class="bold">' + capitalStr + '</span> a été déposée le <span class="bold">' + dateDepot + '</span> à la banque <span class="bold">' + banque + '</span>.</p>'
-      + '<div class="chapter">Article 7 — Forme des actions</div>'
-      + '<p>Les actions de la Société doivent obligatoirement être nominatives. Les actions sont indivisibles à l\'égard de la Société.</p>'
-      + '<div class="chapter">Article 8 — Le Président</div>'
-      + '<p>La Société est représentée à l\'égard des tiers par un Président. La durée des fonctions de Président est illimitée. Le Président est investi des pouvoirs les plus étendus pour agir au nom de la Société dans la limite de l\'objet social.</p>'
-      + '<div class="chapter">Article 9 — Décisions de l\'associé unique</div>'
-      + '<p>L\'associé unique exerce les pouvoirs dévolus aux associés. Les décisions sont répertoriées dans un registre coté et paraphé.</p>'
-      + '<div class="chapter">Article 10 — Exercice social</div>'
-      + '<p>L\'année sociale commence le <span class="bold">1er janvier</span> et se termine le <span class="bold">' + cloture + '</span> de chaque année. Par exception, le premier exercice sera clôturé le <span class="bold">' + cloture + ' ' + anneeCloture + '</span>.</p>'
-      + '<div class="chapter">Article 11 — Affectation du résultat</div>'
-      + '<p>Le bénéfice distribuable est à la disposition de l\'associé unique après prélèvement de la réserve légale obligatoire.</p>'
-      + '<div class="chapter">Article 12 — Dissolution · Liquidation</div>'
-      + '<p>La Société est dissoute dans les cas prévus par la loi ou par décision de l\'associé unique.</p>'
-      + '<div class="chapter">Article 13 — Pouvoirs</div>'
-      + '<p>Tous pouvoirs sont donnés au Président ou à son mandataire pour effectuer toutes formalités de publicité et d\'immatriculation prescrites par la loi.</p>'
-      + '<div class="sig-section"><p>Fait à Saint-Martin, le ' + date + '</p><p>en 4 exemplaires originaux</p><br>'
-      + '<div class="sig-block"><p class="sig-name">' + nomComplet + '</p><p class="sig-role">Associé(e) unique et Président(e)</p><div class="sig-line"></div><p class="sig-note">Signature précédée de la mention « Lu et approuvé »</p></div></div>';
+    const sasucss = `.cover-page{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:90vh;text-align:center;padding:60px;}.cover-denom{font-family:'Inter',sans-serif;font-size:20pt;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#1A2E4A;margin-bottom:16px;}.cover-line{border:none;border-top:1.5px solid #1A2E4A;width:320px;margin:0 auto 24px;}.cover-info{font-family:'EB Garamond',Georgia,serif;font-size:12pt;color:#444;line-height:2.2;margin-bottom:40px;}.cover-title{font-family:'Inter',sans-serif;font-size:14pt;font-weight:600;letter-spacing:0.35em;text-transform:uppercase;color:#1a1a1a;margin-top:20px;}@media print{.cover-page{page-break-after:always;}@page{margin:2.5cm 2cm;}h2{page-break-after:avoid;}}`;
+    const sasucov = `<div class="cover-page"><div class="cover-denom">${denomination}</div><hr class="cover-line"><div class="cover-info">Société par actions simplifiée unipersonnelle<br>Au capital de ${capitalStr}<br>Siège social : ${siege}<br><em>En cours d'immatriculation</em></div><div class="cover-title">Statuts</div></div>`;
+    const sasub = `<h2>L&#39;associé unique :</h2>
+      <p><span class="bold">${nomComplet}</span>, demeurant à <span class="bold">${adresse}</span>, né(e) le <span class="bold">${ddn}</span> à <span class="bold">${lieu}</span>, de nationalité <span class="bold">${nationalite}</span>, ${matrimonial||''},</p>
+      <p>A arrêté ainsi qu&#39;il suit les statuts d&#39;une Société par actions simplifiée unipersonnelle.</p>
+      <div class="chapter">Article 1 — Forme</div><p>La Société est une Société par actions simplifiée unipersonnelle (SASU), régie par les dispositions législatives et réglementaires en vigueur.</p>
+      <div class="chapter">Article 2 — Objet</div><p>${objet}${d.activite_secondaire ? '<br><br>' + d.activite_secondaire : ''}</p>
+      <div class="chapter">Article 3 — Dénomination</div><p><span class="bold">${denomination}</span>${sigle ? ' — Sigle : <span class="bold">' + sigle + '</span>' : ''}</p>
+      <div class="chapter">Article 4 — Siège social</div><p><span class="bold">${siege}</span>. Peut être transféré par décision du Président.</p>
+      <div class="chapter">Article 5 — Durée</div><p><span class="bold">${duree}</span> à compter de l&#39;immatriculation au RCS.</p>
+      <div class="chapter">Article 6 — Capital social</div>
+      <p><span class="bold">${nomComplet}</span> apporte une somme de <span class="bold">${capitalStr}</span> correspondant à <span class="bold">${nbParts} actions</span> de <span class="bold">${valNom} euros</span> chacune, souscrites et intégralement libérées.</p>
+      <p>La somme de <span class="bold">${capitalStr}</span> a été déposée le <span class="bold">${dateDepot}</span> à la banque <span class="bold">${banque}</span>.</p>
+      <div class="chapter">Article 7 — Modifications du capital</div><p>Le capital peut être augmenté, réduit ou amorti conformément aux dispositions législatives et réglementaires.</p>
+      <div class="chapter">Article 8 — Forme des actions</div><p>Les actions sont obligatoirement nominatives et indivisibles à l&#39;égard de la Société.</p>
+      <div class="chapter">Article 9 — Transmission des actions</div><p>Les actions sont librement négociables sauf dispositions légales contraires.</p>
+      <div class="chapter">Article 10 — Droits attachés aux actions</div><p>Chaque action donne droit dans les bénéfices et l&#39;actif social à une part proportionnelle à la quotité du capital qu&#39;elle représente.</p>
+      <div class="chapter">Article 11 — Le Président</div><p>La Société est représentée par un Président. La durée des fonctions est indéterminée. Le Président est investi des pouvoirs les plus étendus pour agir au nom de la Société dans les limites de l&#39;objet social.</p>
+      <div class="chapter">Article 12 — Décisions de l&#39;associé unique</div><p>L&#39;associé unique exerce les pouvoirs dévolus aux associés. Les décisions sont consignées dans un registre coté et paraphé.</p>
+      <div class="chapter">Article 13 — Exercice social</div><p>Du 1er janvier au <span class="bold">${cloture}</span>. Premier exercice clôturé le <span class="bold">${cloture} ${anneeCloture}</span>.</p>
+      <div class="chapter">Article 14 — Comptes annuels</div><p>Le Président établit les comptes dans les six (6) mois de la clôture.</p>
+      <div class="chapter">Article 15 — Affectation du résultat</div><p>Le bénéfice distribuable est à la disposition de l&#39;associé unique après prélèvement de la réserve légale.</p>
+      <div class="chapter">Article 16 — Dissolution · Liquidation</div><p>La Société est dissoute dans les cas prévus par la loi ou par décision de l&#39;associé unique.</p>
+      <div class="chapter">Article 17 — Pouvoirs</div>
+      <p>La gérance est mandatée pour les engagements suivants :</p>
+      <p class="indent">– Dépôt du capital auprès de <span class="bold">${banque}</span> ;<br>– Ouverture d&#39;un compte courant ;<br>– Frais <span class="bold">MY ADMIN SXM</span> relatifs à la création ;<br>– Toutes formalités d&#39;immatriculation.</p>
+      <p>Tous pouvoirs au Président pour accomplir les formalités prescrites par la loi.</p>
+      <div class="sig-section"><p>Fait à Saint-Martin (97150), le ${date}</p><p>en ___ exemplaires originaux</p><br>
+      <div class="sig-block"><p class="sig-name">${nomComplet}</p><p class="sig-role">Associé(e) unique et Président(e)</p><div class="sig-line"></div><p class="sig-note">Signature précédée de la mention manuscrite « Lu et approuvé »</p></div></div>`;
+    const winSASU = window.open('', '_blank');
+    winSASU.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Statuts SASU — ' + denomination + '</title><link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>' + css + sasucss + '</style></head><body><div class="toolbar"><span class="toolbar-title">Statuts SASU · ' + denomination + '</span><button class="btn btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button></div><div style="height:46px"></div>' + sasucov + '<div class="wrap">' + sasub + '</div></body></html>');
+    winSASU.document.close();
+    return;
   }
 
   else if (type === 'creation_ei') {
     html = '<div class="doc-title">Déclaration de création d\'entreprise individuelle</div><hr>'
-      + '<p>Je soussigné(e), <span class="bold">' + nomComplet + '</span>,<br>'
-      + 'né(e) le <span class="bold">' + ddn + '</span> à <span class="bold">' + lieu + '</span>,<br>'
-      + 'de nationalité <span class="bold">' + nationalite + '</span>,<br>'
-      + 'demeurant <span class="bold">' + adresse + '</span>,</p>'
+      + '<p>Je soussigné(e), <span class="bold">' + nomComplet + '</span>,<br>né(e) le <span class="bold">' + ddn + '</span> à <span class="bold">' + lieu + '</span>,<br>de nationalité <span class="bold">' + nationalite + '</span>,<br>demeurant <span class="bold">' + adresse + '</span>,</p>'
       + '<p>Déclare exercer à titre individuel l\'activité suivante :</p>'
       + '<p class="indent"><span class="bold">Activité principale :</span> ' + objet + '</p>'
       + (d.activite_secondaire ? '<p class="indent"><span class="bold">Activité secondaire :</span> ' + d.activite_secondaire + '</p>' : '')
@@ -2416,33 +2741,23 @@ function openDoc(d,type) {
       + '<div class="sig-block"><div class="sig-line"></div><p class="sig-name">' + nomComplet + '</p></div></div>';
   }
 
+
   else if (type === 'association') {
     const fondateurs = allAssocies.map(function(a, i) {
-      return '<p class="indent"><span class="bold">' + nomA(a) + '</span>, demeurant à ' + adrA(a, i) + ', ' + matrA(a) + ',</p>';
+      return '<p class="indent"><span class="bold">' + nomA(a) + '</span>, demeurant à ' + adrA(a, i) + ', ' + (matrA(a)||'') + ',</p>';
     }).join('');
-
     html = '<div class="doc-title">Statuts de l\'association<br>« ' + denomination + ' »</div><hr>'
-      + '<h2>Article 1 – Dénomination</h2>'
-      + '<p>Il est fondé entre les membres adhérents aux présents statuts une association régie par la loi du 1er juillet 1901, ayant pour titre : <span class="bold">' + denomination + '</span>.</p>'
+      + '<h2>Article 1 – Dénomination</h2><p>Il est fondé entre les membres adhérents aux présents statuts une association régie par la loi du 1er juillet 1901, ayant pour titre : <span class="bold">' + denomination + '</span>.</p>'
       + '<h2>Article 2 – Objet</h2><p>' + objet + '</p>'
-      + '<h2>Article 3 – Siège social et durée</h2>'
-      + '<p>Le siège social est situé : <span class="bold">' + siege + '</span>. Il peut être transféré sur simple décision du Conseil d\'Administration. La durée de l\'association est illimitée.</p>'
-      + '<h2>Article 4 – Composition</h2>'
-      + '<p>L\'association se compose de membres fondateurs, de membres actifs et de membres d\'honneur. L\'adhésion est soumise à l\'approbation du Conseil d\'Administration.</p>'
-      + '<h2>Article 5 – Démission · Radiation · Exclusion</h2>'
-      + '<p>La qualité de membre se perd par démission, cessation d\'activité ou radiation prononcée par le Conseil d\'Administration.</p>'
-      + '<h2>Article 6 – Ressources</h2>'
-      + '<p>Les ressources de l\'association comprennent les cotisations, les subventions, les dons et toutes autres ressources autorisées par la loi.</p>'
-      + '<h2>Article 7 – Assemblée Générale Ordinaire</h2>'
-      + '<p>L\'Assemblée Générale réunit tous les membres au moins une fois par an. Elle est convoquée 15 jours avant la réunion avec l\'ordre du jour. Les décisions sont adoptées à la majorité simple.</p>'
-      + '<h2>Article 8 – Conseil d\'Administration</h2>'
-      + '<p>L\'association est administrée par un Conseil d\'Administration composé de 3 à 12 membres élus par l\'AG pour un mandat de 2 ans renouvelable.</p>'
-      + '<h2>Article 9 – Bureau</h2>'
-      + '<p>Le Bureau est composé d\'un Président, d\'un Secrétaire et d\'un Trésorier, élus par le CA parmi ses membres pour un mandat de 2 ans renouvelable.</p>'
-      + '<h2>Article 10 – Assemblée Générale Extraordinaire</h2>'
-      + '<p>L\'AGE est compétente pour la modification des statuts et la dissolution de l\'association. Décisions à la majorité des 2/3 des membres présents ou représentés.</p>'
-      + '<h2>Article 11 – Dissolution</h2>'
-      + '<p>En cas de dissolution prononcée par l\'AGE, un liquidateur est désigné et l\'actif est attribué conformément à la loi.</p>'
+      + '<h2>Article 3 – Siège social et durée</h2><p>Le siège social est situé : <span class="bold">' + siege + '</span>. La durée de l\'association est illimitée.</p>'
+      + '<h2>Article 4 – Composition</h2><p>L\'association se compose de membres fondateurs, de membres actifs et de membres d\'honneur.</p>'
+      + '<h2>Article 5 – Démission · Radiation · Exclusion</h2><p>La qualité de membre se perd par démission, cessation d\'activité ou radiation prononcée par le Conseil d\'Administration.</p>'
+      + '<h2>Article 6 – Ressources</h2><p>Les ressources comprennent les cotisations, subventions, dons et toutes autres ressources autorisées par la loi.</p>'
+      + '<h2>Article 7 – Assemblée Générale Ordinaire</h2><p>L\'AG réunit tous les membres au moins une fois par an, convoquée 15 jours à l\'avance. Décisions à la majorité simple.</p>'
+      + '<h2>Article 8 – Conseil d\'Administration</h2><p>L\'association est administrée par un CA de 3 à 12 membres élus pour 2 ans renouvelable.</p>'
+      + '<h2>Article 9 – Bureau</h2><p>Composé d\'un Président, d\'un Secrétaire et d\'un Trésorier, élus par le CA pour 2 ans.</p>'
+      + '<h2>Article 10 – Assemblée Générale Extraordinaire</h2><p>Compétente pour la modification des statuts et la dissolution. Décisions à la majorité des 2/3.</p>'
+      + '<h2>Article 11 – Dissolution</h2><p>En cas de dissolution, un liquidateur est désigné et l\'actif est attribué conformément à la loi.</p>'
       + '<div class="sig-section"><p>Fait à Saint-Martin, le ' + date + '</p>'
       + '<p>Membres fondateurs :</p>' + fondateurs
       + '<div class="sig-grid">'
@@ -2451,19 +2766,16 @@ function openDoc(d,type) {
       + '</div></div>';
   }
 
+
   else {
     html = '<div class="doc-title">' + typeLabel + '</div><hr><p>Document en cours de développement.</p>';
   }
 
   // Ouvrir dans nouvelle fenêtre
   const win = window.open('', '_blank');
-  win.document.write('<!DOCTYPE html><html lang="fr"><head>'
-    + '<meta charset="UTF-8">'
-    + '<title>' + typeLabel + ' — ' + denomination + '</title>'
-    + '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">'
-    + '<style>' + css + '</style>'
-    + '</head><body>'
-    + toolbar
+  win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>' + typeLabel + ' — ' + denomination + '</title><link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>' + css + '</style></head><body>'
+    + '<div class="toolbar"><span class="toolbar-title">' + typeLabel + ' · ' + denomination + '</span><button class="btn btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button><button class="btn btn-copy" onclick="navigator.clipboard.writeText(document.querySelector(\'.wrap\').innerText).then(()=>alert(\'Copié !\'))">📋 Copier</button></div>'
+    + '<div style="height:46px"></div>'
     + '<div class="wrap">' + html + '</div>'
     + '</body></html>');
   win.document.close();
