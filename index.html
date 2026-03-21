@@ -1367,7 +1367,7 @@ async function generateDoc() {
   // pour éviter le blocage de popup par Chrome
   const docWin = window.open('', '_blank');
   if(!docWin){showAlert('generer','⚠️ Autorisez les popups pour ce site puis réessayez.','error');return;}
-  docWin.document.write('<html><head><meta charset="UTF-8"><style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;color:#555;}</style></head><body><p>⏳ Chargement du document...</p></body></html>');
+  docWin.document.write('<html><head><meta charset="UTF-8"><style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f8f8f8;color:#555;font-size:16px;}</style></head><body><div>⏳ Génération du document en cours...</div></body></html>');
   const {data:d} = await sb.from('dossiers').select('*').eq('id',clientId).single();
   if(!d){docWin.close();showAlert('generer','Dossier introuvable.','error');return;}
   openDoc(d,selectedDocType,docWin);
@@ -2152,6 +2152,29 @@ function openDoc(d,type,docWin) {
     return;
   }
 
+  // == ECRITURE DOCUMENT (docs simples) ==
+  if(html) {
+    const w = docWin || window.open('', '_blank');
+    if(!w) { alert('Popups bloqués. Autorisez les popups pour ce site.'); return; }
+    w.document.write('<!DOCTYPE html><html lang="fr"><head>'
+      + '<meta charset="UTF-8">'
+      + '<title>' + typeLabel + ' — ' + denomination + '</title>'
+      + '<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">'
+      + '<style>' + css + '</style>'
+      + '</head><body>'
+      + toolbar
+      + '<div class="wrap">' + html + '</div>'
+      + '</body></html>');
+    w.document.close();
+    (function(win){
+      var s1=win.document.createElement('script');
+      s1.src='https://unpkg.com/docx@8.5.0/build/index.js';
+      win.document.head.appendChild(s1);
+      var s2=win.document.createElement('script');
+      s2.textContent="function generateDocx(title,denom,wrap){\n  if(typeof docx==='undefined'){\n    const btn = document.querySelector('.btn-docx');\n    if(btn) btn.textContent='\u23f3 Chargement...';\n    let tries = (generateDocx._tries = (generateDocx._tries||0) + 1);\n    if(tries > 15){ if(btn) btn.textContent='\ud83d\udcc4 Word .docx'; alert('Erreur: biblioth\u00e8que docx.js non charg\u00e9e. V\u00e9rifiez votre connexion.'); return; }\n    setTimeout(()=>generateDocx(title,denom,wrap), 800);\n    return;\n  }\n  const btn2 = document.querySelector('.btn-docx');\n  if(btn2) btn2.textContent='\u23f3 G\u00e9n\u00e9ration...';\n  generateDocx._tries = 0;\n  const{Document,Packer,Paragraph,TextRun,AlignmentType,PageBreak,BorderStyle}=docx;\n  const children=[];\n  const processed=new Set();\n  const cover=wrap.querySelector('.cover-page');\n  if(cover){\n    for(let i=0;i<8;i++)children.push(new Paragraph({text:''}));\n    const dn=cover.querySelector('.cover-denom');\n    if(dn)children.push(new Paragraph({children:[new TextRun({text:dn.textContent.trim(),bold:true,size:32,color:'1A2E4A'})],alignment:AlignmentType.CENTER,spacing:{after:240}}));\n    children.push(new Paragraph({border:{bottom:{style:BorderStyle.SINGLE,size:6,color:'1A2E4A'}},alignment:AlignmentType.CENTER,spacing:{after:320}}));\n    const inf=cover.querySelector('.cover-info');\n    if(inf)inf.innerText.trim().split('\\n').forEach(l=>{if(l.trim())children.push(new Paragraph({children:[new TextRun({text:l.trim(),size:22,color:'555555'})],alignment:AlignmentType.CENTER,spacing:{after:80}}));});\n    children.push(new Paragraph({text:'',spacing:{after:400}}));\n    const tt=cover.querySelector('.cover-title');\n    if(tt)children.push(new Paragraph({children:[new TextRun({text:tt.textContent.trim(),bold:true,size:28,allCaps:true})],alignment:AlignmentType.CENTER,spacing:{after:200}}));\n    children.push(new Paragraph({children:[new PageBreak()]}));\n  }\n  wrap.querySelectorAll('h2,.chapter,p,.sig-name,.sig-role,.sig-line,.sig-note,.info-block,.legal-note').forEach(el=>{\n    if(el.closest('.cover-page,.toolbar'))return;\n    if(processed.has(el))return;\n    processed.add(el);\n    const tag=el.tagName.toLowerCase();\n    const cls=el.className||'';\n    const text=el.innerText?.trim()||'';\n    if(cls.includes('chapter')){\n      children.push(new Paragraph({text:'',spacing:{after:100}}));\n      children.push(new Paragraph({children:[new TextRun({text:text.toUpperCase(),bold:true,size:18,color:'666666'})],spacing:{after:80,before:240},border:{bottom:{style:BorderStyle.SINGLE,size:2,color:'cccccc'}}}));\n    }else if(tag==='h2'){\n      children.push(new Paragraph({text:'',spacing:{after:40}}));\n      children.push(new Paragraph({children:[new TextRun({text:text,bold:true,size:22,allCaps:true})],spacing:{after:80,before:180}}));\n    }else if(cls.includes('sig-line')){\n      children.push(new Paragraph({border:{bottom:{style:BorderStyle.SINGLE,size:4,color:'aaaaaa'}},spacing:{after:60,before:180}}));\n    }else if(cls.includes('sig-name')){\n      children.push(new Paragraph({children:[new TextRun({text:text,bold:true,size:22})],spacing:{after:60}}));\n    }else if(cls.includes('sig-role')){\n      children.push(new Paragraph({children:[new TextRun({text:text,italics:true,color:'555555',size:20})],spacing:{after:100}}));\n    }else if(cls.includes('sig-note')){\n      children.push(new Paragraph({children:[new TextRun({text:text,italics:true,color:'888888',size:18})],spacing:{after:80}}));\n    }else if((cls.includes('info-block')||cls.includes('legal-note'))&&text){\n      children.push(new Paragraph({children:[new TextRun({text:text,italics:true,size:20})],indent:{left:360},spacing:{after:120,before:120}}));\n    }else if(text){\n      const isIndent=cls.includes('indent');\n      const isBold=cls.includes('bold');\n      const isCenter=cls.includes('center');\n      const isItalic=cls.includes('italic');\n      const runs=[];\n      el.childNodes.forEach(n=>{\n        if(n.nodeType===3){const t=n.textContent;if(t)runs.push(new TextRun({text:t,size:22,italics:isItalic}));}\n        else if(n.nodeType===1){const b=n.className?.includes('bold')||n.style?.fontWeight>='600';runs.push(new TextRun({text:n.innerText||n.textContent,bold:b,size:22,italics:isItalic&&!b}));}\n      });\n      children.push(new Paragraph({\n        children:runs.length?runs:[new TextRun({text:text,bold:isBold,italics:isItalic,size:22})],\n        alignment:isCenter?AlignmentType.CENTER:AlignmentType.JUSTIFIED,\n        indent:isIndent?{left:360}:undefined,\n        spacing:{after:100}\n      }));\n    }\n  });\n  const doc=new Document({styles:{default:{document:{run:{font:'Times New Roman',size:22},paragraph:{spacing:{line:360}}}}},sections:[{properties:{page:{margin:{top:1417,right:1134,bottom:1417,left:1134}}},children}]});\n  Packer.toBlob(doc).then(blob=>{\n    const a=document.createElement('a');\n    a.href=URL.createObjectURL(blob);\n    a.download=(denom||'Document').replace(/[^a-zA-Z0-9_-]/g,'_')+'.docx';\n    a.click();\n  }).catch(e=>alert('Erreur DOCX: '+e.message));\n}";
+      win.document.head.appendChild(s2);
+    })(w);
+  }
 }
 
 
