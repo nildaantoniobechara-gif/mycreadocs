@@ -1363,13 +1363,18 @@ async function generateDoc() {
   const clientId = document.getElementById('select-client-doc').value;
   if(!clientId){showAlert('generer','Veuillez sélectionner un client.','error');return;}
   if(!selectedDocType){showAlert('generer','Veuillez sélectionner un type de document.','error');return;}
+  // Ouvrir la fenêtre IMMÉDIATEMENT (synchrone) avant tout await
+  // pour éviter le blocage de popup par Chrome
+  const docWin = window.open('', '_blank');
+  if(!docWin){showAlert('generer','⚠️ Autorisez les popups pour ce site puis réessayez.','error');return;}
+  docWin.document.write('<html><head><meta charset="UTF-8"><style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;color:#555;}</style></head><body><p>⏳ Chargement du document...</p></body></html>');
   const {data:d} = await sb.from('dossiers').select('*').eq('id',clientId).single();
-  if(!d){showAlert('generer','Dossier introuvable.','error');return;}
-  openDoc(d,selectedDocType);
+  if(!d){docWin.close();showAlert('generer','Dossier introuvable.','error');return;}
+  openDoc(d,selectedDocType,docWin);
   showAlert('generer','✅ Document généré ! Utilisez Imprimer / PDF dans la nouvelle fenêtre.','success');
 }
 
-function openDoc(d,type) {
+function openDoc(d,type,docWin) {
   const today = new Date();
   const date = today.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
   const ddn = d.date_naissance ? new Date(d.date_naissance).toLocaleDateString('fr-FR') : '___';
@@ -1660,7 +1665,7 @@ function openDoc(d,type) {
         + '<div class="sig-line"></div><p class="sig-note">Signature précédée de « Lu et approuvé »</p></div>';
     }).join('');
 
-    const win2 = window.open('', '_blank');
+    const win2 = docWin || window.open('', '_blank');
     win2.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">'
       + '<title>Liste souscripteurs — ' + denomination + '</title>'
       + '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">'
@@ -1935,7 +1940,7 @@ function openDoc(d,type) {
 
     const txtContent = denomination + '\nSociété à responsabilité limitée\nAu capital de ' + capitalStr + '\nSiège social : ' + siege + '\nEn cours d\'immatriculation\n\n\nSTATUTS\n\n\nLES SOUSSIGNÉS,\n\n' + soussignesText + '\n\nOnt établi ainsi qu\'il suit les statuts de la société à responsabilité limitée devant exister entre eux.\n\n[... texte intégral des statuts ...]';
 
-    const winSARL = window.open('', '_blank');
+    const winSARL = docWin || window.open('', '_blank');
     winSARL.document.write('<!DOCTYPE html><html lang="fr"><head>'
       + '<meta charset="UTF-8">'
       + '<title>Statuts SARL — ' + denomination + '</title>'
@@ -2125,7 +2130,7 @@ function openDoc(d,type) {
       + '<div class="sig-block"><p class="sig-name">' + nomComplet + '</p><p class="sig-role">Associé(e) unique et ' + qualite + '</p><div class="sig-line"></div><p class="sig-note">Signature précédée de la mention manuscrite « Lu et approuvé »</p></div>'
       + '</div>';
 
-    const winEURL = window.open('', '_blank');
+    const winEURL = docWin || window.open('', '_blank');
     winEURL.document.write('<!DOCTYPE html><html lang="fr"><head>'
       + '<meta charset="UTF-8">'
       + '<title>Statuts EURL — ' + denomination + '</title>'
